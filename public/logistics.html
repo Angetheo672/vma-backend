@@ -192,11 +192,9 @@
 
         function openScanner() {
             if (window.Android) {
-                Android.showToast("Ouverture du scanner QR/Barcode...");
-                // In a real app, this would call native scanner
-                // Android.startScanning();
+                Android.openScanner();
             } else {
-                alert("Scanner simulé. Entrez VMA-8829 manuellement.");
+                alert("Scanner simulé. Entrez VMA-PRD-XXXX manuellement.");
             }
         }
 

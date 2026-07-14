@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Nos Agences | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=votre_cle_google_maps_ici"></script>
+</head>
+<body class="app-shell">
+    <header class="app-header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold); font-size: 20px;"></i>
+            <span class="brand-name">AGENCES & RETRAIT</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 0;">
+        <!-- MAP AREA -->
+        <div id="map" style="width: 100%; height: 250px; background: #111;"></div>
+
+        <!-- AGENCIES LIST -->
+        <div class="p-16">
+            <h3 style="font-size: 16px; margin-bottom: 20px;">VOS POINTS DE RETRAIT VMA</h3>
+
+            <div class="agency-card">
+                <div class="agency-info">
+                    <h4>VMA Douala - Akwa</h4>
+                    <p>Rue Pau, Immeuble VMA Elite</p>
+                    <div class="status-badge">Ouvert • 08h-18h</div>
+                </div>
+                <button onclick="navigate(4.044, 9.708)" class="nav-btn"><i class="fa fa-location-arrow"></i></button>
+            </div>
+
+            <div class="agency-card">
+                <div class="agency-info">
+                    <h4>VMA Yaoundé - Bastos</h4>
+                    <p>Avenue de l'Indépendance</p>
+                    <div class="status-badge">Ouvert • 09h-19h</div>
+                </div>
+                <button onclick="navigate(3.883, 11.517)" class="nav-btn"><i class="fa fa-location-arrow"></i></button>
+            </div>
+
+            <div class="agency-card">
+                <div class="agency-info">
+                    <h4>VMA Abidjan - Plateau</h4>
+                    <p>Boulevard de la République</p>
+                    <div class="status-badge">Ouvert • 08h-18h</div>
+                </div>
+                <button onclick="navigate(5.320, -4.019)" class="nav-btn"><i class="fa fa-location-arrow"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .agency-card {
+            background: #111; border: 1px solid #222; border-radius: 18px; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
+        }
+        .agency-info h4 { color: #fff; font-size: 15px; margin-bottom: 5px; }
+        .agency-info p { color: #888; font-size: 12px; margin-bottom: 8px; }
+        .status-badge { font-size: 10px; color: var(--vma-gold); background: rgba(255,215,0,0.1); padding: 2px 8px; border-radius: 4px; display: inline-block; }
+        .nav-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--vma-gold); border: none; color: #000; font-size: 18px; }
+    </style>
+
+    <script>
+        function initMap() {
+            const center = { lat: 4.051, lng: 9.767 }; // Center on Douala
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12, center: center,
+                styles: [ { "featureType": "all", "elementType": "all", "stylers": [ { "invert_lightness": true }, { "saturation": 10 }, { "lightness": 30 }, { "gamma": 0.5 }, { "hue": "#435158" } ] } ]
+            });
+
+            // Add Markers
+            new google.maps.Marker({ position: { lat: 4.044, lng: 9.708 }, map, title: "VMA Akwa" });
+            new google.maps.Marker({ position: { lat: 3.883, lng: 11.517 }, map, title: "VMA Yaoundé" });
+        }
+        window.onload = initMap;
+
+        function navigate(lat, lng) {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+        }
+    </script>
+</body>
+</html>

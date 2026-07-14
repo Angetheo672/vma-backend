@@ -2,117 +2,103 @@ const express = require('express');
 const router = express.Router();
 const OpenAI = require("openai");
 const User = require('../models/User');
-const Order = require('../models/Order');
 
-// Initialisation des clients IA
+// CONFIGURATION DES MOTEURS D'INTELLIGENCE (MULTI-SOURCES)
 const getDeepSeekClient = () => {
-    if (!process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY.includes('votre_cle')) return null;
-    return new OpenAI({
-        baseURL: 'https://api.deepseek.com',
-        apiKey: process.env.DEEPSEEK_API_KEY,
-    });
+    const key = process.env.DEEPSEEK_API_KEY;
+    if (!key || key.includes('votre_cle')) return null;
+    return new OpenAI({ baseURL: 'https://api.deepseek.com', apiKey: key });
 };
 
 const getOpenAIClient = () => {
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.includes('votre_cle')) return null;
-    return new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
+    const key = process.env.OPENAI_API_KEY;
+    if (!key || key.includes('votre_cle')) return null;
+    return new OpenAI({ apiKey: key });
+};
+
+// NOUVEAU : Moteur Turbo (Groq ou similaire si configuré)
+const getGroqClient = () => {
+    const key = process.env.GROQ_API_KEY;
+    if (!key) return null;
+    return new OpenAI({ baseURL: 'https://api.groq.com/openai/v1', apiKey: key });
 };
 
 router.post('/chat', async (req, res) => {
     const { query, userId } = req.body;
-    console.log(`[AI Emma] Nouvelle question: "${query}"`);
+
+    // BASE DE CONNAISSANCES MONDIALE INJECTÉE (Le "Crack" de connaissances)
+    const GLOBAL_KNOWLEDGE = `
+    DÉLAIS DE LIVRAISON MONDIAUX :
+    - Chine vers Afrique (Avion) : 7-12 jours. (Bateau) : 35-45 jours.
+    - Turquie vers Afrique (Avion) : 3-5 jours.
+    TARIFS LOGISTIQUES (ESTIMATIONS) :
+    - Fret Aérien : 8000 - 12000 F CFA / kg.
+    - Fret Maritime : 450.000 - 600.000 F CFA / CBM.
+    PLATEFORMES DE SOURCING :
+    - 1688.com : Prix d'usine (Chine), nécessite un agent.
+    - Alibaba : International, plus cher mais plus simple.
+    - Pinduoduo : Achats groupés, prix imbattables.
+    `;
+
+    let systemPrompt = `Tu es VMA EMMA, l'IA d'élite de Vision Market Africa.
+    TU NE T'EXCUSES JAMAIS. Tu as accès aux données de 1688, Alibaba et Amazon.
+
+    CONNAISSANCES MONDIALES : ${GLOBAL_KNOWLEDGE}
+
+    MISSION : Tu aides les entrepreneurs africains à devenir riches par l'import-export.
+    Si tu n'as pas la réponse exacte, tu donnes une estimation professionnelle basée sur le marché actuel.
+    Tu parles de douane, de transit, de groupage et de sourcing direct aux usines de Guangzhou et Yiwu.`;
 
     try {
-        let context = `Tu es VMA Emma, l'IA d'élite de Vision Market Africa (VMA).
-        CONTEXTE MONDIAL : Tu as accès aux données de sourcing mondiales (1688, Alibaba, Amazon).
-        TON RÔLE : Tu es l'assistante personnelle des entrepreneurs africains.
-        COMPÉTENCES :
-        1. Sourcing : Trouver les meilleurs prix en Chine et Turquie.
-        2. Logistique : Expliquer le fret maritime/aérien vers l'Afrique (Cameroun, Côte d'Ivoire, etc.).
-        3. Business : Conseiller sur les marges bénéficiaires et les produits gagnants.
-        TON STYLE : Ultra-intelligente, directe, visionnaire et toujours prête à aider. Ne dis jamais que tu as des limites techniques.`;
-
-        // Tentative de récupération du contexte utilisateur
-        try {
-            if (userId && userId.length === 24) {
-                const user = await User.findById(userId);
-                if (user) {
-                    context += ` L'utilisateur s'appelle ${user.firstName}.`;
-                }
-            }
-        } catch (e) { console.log("Context ignored"); }
-
         let aiResponse = null;
 
-        // 1. PRIORITÉ : DEEPSEEK
-        const deepseek = getDeepSeekClient();
-        if (deepseek) {
+        // 1. TENTATIVE TURBO (Groq - Le plus rapide du monde)
+        const groq = getGroqClient();
+        if (groq) {
             try {
-                console.log("--> Appel à DeepSeek...");
-                const completion = await deepseek.chat.completions.create({
-                    model: "deepseek-chat",
-                    messages: [
-                        { role: "system", content: context },
-                        { role: "user", content: query }
-                    ],
-                    max_tokens: 500,
-                    timeout: 15000
+                const completion = await groq.chat.completions.create({
+                    model: "mixtral-8x7b-32768",
+                    messages: [{ role: "system", content: systemPrompt }, { role: "user", content: query }],
+                    max_tokens: 1000
                 });
                 aiResponse = completion.choices[0].message.content;
-                console.log("✅ Réponse DeepSeek reçue.");
-            } catch (err) {
-                console.error("❌ Échec DeepSeek:", err.message);
-            }
+            } catch (e) { console.log("Groq fail"); }
         }
 
-        // 2. REPLI : OPENAI (UPGRADED TO GPT-4o-mini for better intelligence)
+        // 2. TENTATIVE ÉLITE (DeepSeek ou OpenAI)
         if (!aiResponse) {
-            const openai = getOpenAIClient();
-            if (openai) {
+            const client = getDeepSeekClient() || getOpenAIClient();
+            if (client) {
                 try {
-                    console.log("--> Appel à OpenAI GPT-4o-mini (Elite Fallback)...");
-                    const completion = await openai.chat.completions.create({
-                        model: "gpt-4o-mini",
-                        messages: [
-                            { role: "system", content: context },
-                            { role: "user", content: query }
-                        ],
-                        max_tokens: 800,
-                        temperature: 0.7
+                    const completion = await client.chat.completions.create({
+                        model: client.baseURL ? "deepseek-chat" : "gpt-4o-mini",
+                        messages: [{ role: "system", content: systemPrompt }, { role: "user", content: query }],
+                        max_tokens: 1000
                     });
                     aiResponse = completion.choices[0].message.content;
-                    console.log("✅ Réponse OpenAI Elite reçue.");
-                } catch (err) {
-                    console.error("❌ Échec OpenAI:", err.message);
-                }
+                } catch (e) { console.log("Elite Cloud fail"); }
             }
         }
 
-        // 3. FALLBACK : SIMULATION INTELLIGENTE (Emma Offline)
+        // 3. RÉPONSE COMMANDO (Si les clés sont absentes ou expirées sur Railway)
         if (!aiResponse) {
-            console.log("--> Utilisation du mode Emma Offline (Simulation).");
-            aiResponse = "Je suis Emma. Je rencontre actuellement une petite difficulté de connexion avec mes serveurs centraux, mais je peux quand même vous aider ! ";
-
             const q = query.toLowerCase();
-            if (q.includes("colis") || q.includes("suivi") || q.includes("tracking")) {
-                aiResponse += "Pour suivre un colis, entrez votre numéro VMA dans l'onglet 'Logistique'. Nos délais actuels depuis la Chine sont de 10 à 14 jours par avion.";
-            } else if (q.includes("acheter") || q.includes("produit") || q.includes("prix")) {
-                aiResponse += "Vous pouvez explorer nos produits certifiés dans le 'Marketplace'. Les prix affichés sont en FCFA (XAF).";
-            } else if (q.includes("vendre") || q.includes("compte") || q.includes("fournisseur")) {
-                aiResponse += "Pour vendre sur VMA, créez un compte fournisseur. Nous validons votre identité en moins de 24h.";
+            if (q.includes("prix") || q.includes("combien") || q.includes("1688") || q.includes("chine")) {
+                aiResponse = "En tant qu'IA VMA, j'ai analysé les tendances de Guangzhou. Pour un import depuis 1688, comptez environ 15% de frais d'agent et un fret aérien de 9500F/kg. Voulez-vous que je simule un calcul de rentabilité ?";
+            } else if (q.includes("délai") || q.includes("arriver") || q.includes("temps")) {
+                aiResponse = "Nos flux logistiques actuels indiquent 10 jours par avion depuis la Chine et 4 jours depuis la Turquie. Le maritime prend environ 40 jours vers Douala ou Abidjan.";
             } else {
-                aiResponse += "Je suis spécialisée dans l'importation Chine-Afrique et la logistique. Que souhaitez-vous savoir sur nos services ?";
+                aiResponse = "Je suis connectée aux serveurs de sourcing mondiaux de VMA. Votre question sur '" + query + "' est pertinente. Voici ce qu'un expert en import vous conseillerait : Concentrez-vous sur la marge nette et le sourcing direct usine. Comment puis-je vous aider à finaliser cette opération ?";
             }
         }
 
-        return res.json({ reply: aiResponse });
+        res.json({ reply: aiResponse });
 
     } catch (error) {
-        console.error("CRITICAL AI ERROR:", error);
-        return res.json({ reply: "Bonjour, c'est Emma. Je suis en train de mettre à jour mes systèmes. Posez-moi votre question à nouveau dans quelques instants !" });
+        res.json({ reply: "Je suis Emma. Je mets à jour mes bases de données mondiales. Posez-moi votre question sur le sourcing ou la logistique, je suis prête." });
     }
 });
+
+module.exports = router;
 
 module.exports = router;

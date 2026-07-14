@@ -3,7 +3,8 @@ const router = express.Router();
 const Order = require('../models/Order');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
-const sendEmail = require('../config/nodemailer');
+const { sendEmail } = require('../services/emailService');
+const { sendPushNotification } = require('../services/notificationService');
 
 // @route   POST api/orders
 // @desc    Create a new order
@@ -18,7 +19,7 @@ router.post('/', auth, async (req, res) => {
         });
         const order = await newOrder.save();
 
-        // Send Confirmation Email
+        // Send Confirmation Email & Push Notification
         const user = await User.findById(req.user.id);
         if (user) {
             const subject = `Confirmation de commande - Vision Market Africa #${order._id.toString().slice(-6).toUpperCase()}`;
@@ -31,7 +32,11 @@ router.post('/', auth, async (req, res) => {
                 <br>
                 <p>L'équipe Vision Market Africa</p>
             `;
-            await sendEmail(user.email, subject, '', html);
+            await sendEmail(user.email, subject, html);
+
+            if (user.fcmToken) {
+                await sendPushNotification(user.fcmToken, "Commande Validée ✅", `Votre commande #${order._id.toString().slice(-6).toUpperCase()} a été enregistrée.`);
+            }
         }
 
         res.json(order);

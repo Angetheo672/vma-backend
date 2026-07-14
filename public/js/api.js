@@ -58,6 +58,7 @@ const API = {
     getProductById: (id) => API.request(`/products/${id}`),
     createOrder: (order) => API.request('/orders', { method: 'POST', body: JSON.stringify(order) }),
     getOrders: () => API.request('/orders'),
+    updateFCMToken: (token) => API.request('/auth/fcm-token', { method: 'POST', body: JSON.stringify({ token }) }),
     askBuddy: (query) => API.request('/ai/chat', { method: 'POST', body: JSON.stringify({ query }) }),
     analyzeLink: (url) => API.request('/tools/analyze-link', { method: 'POST', body: JSON.stringify({ url }) }),
     initiatePayment: (paymentData) => API.request('/payments/initiate', { method: 'POST', body: JSON.stringify(paymentData) })

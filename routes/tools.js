@@ -30,11 +30,28 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
         const imageUrl = req.file.path; // Cloudinary URL
         console.log(`[Visual Search] Decrypting Image: ${imageUrl}`);
 
-        // 1. Identify Product using OpenAI Vision for Global Accuracy
+        // 1. Identify Product using Google Gemini (Free Tier) or OpenAI Vision
         let keywords = "Produit Premium";
 
         try {
-            if (process.env.OPENAI_API_KEY) {
+            if (process.env.GOOGLE_GEMINI_API_KEY && process.env.GOOGLE_GEMINI_API_KEY !== 'votre_cle_gemini_ici') {
+                console.log("--> Using Google Gemini for Visual AI...");
+                const { GoogleGenerativeAI } = require("@google/generative-ai");
+                const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+                // Fetch the image and convert to base64
+                const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+                const base64Image = Buffer.from(response.data).toString('base64');
+
+                const prompt = "Identify this product with 3 precise keywords for sourcing on Alibaba/1688. Return only the keywords separated by spaces.";
+                const result = await model.generateContent([
+                    prompt,
+                    { inlineData: { data: base64Image, mimeType: "image/jpeg" } }
+                ]);
+                keywords = result.response.text().trim();
+                console.log(`[Gemini Vision] Keywords detected: ${keywords}`);
+            } else if (process.env.OPENAI_API_KEY) {
                 const OpenAI = require("openai");
                 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -59,9 +76,10 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
         }
 
         // 2. Fetch results from Global Platforms
-        const [alibabaResults, amazonResults] = await Promise.all([
+        const [alibabaResults, amazonResults, aliexpressResults] = await Promise.all([
             aggregator.fetchFromAlibaba(keywords),
-            aggregator.fetchFromAmazon(keywords)
+            aggregator.fetchFromAmazon(keywords),
+            aggregator.fetchFromAliExpress(keywords)
         ]);
 
         // 3. Construct Google Search Image Link (Deep Search)
@@ -69,14 +87,13 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
 
         // 4. Enhanced Shipping Estimation Logic
         const estimateShipping = (product) => {
-            // Logic based on price/category to guess weight/vol
             const price = product.price;
             let weight = 0.5; // Default 500g
-            if (price > 100000) weight = 2.5; // Laptops/Large electronics
-            if (price > 500000) weight = 5.0; // Very large items
+            if (price > 100000) weight = 2.5;
+            if (price > 500000) weight = 5.0;
 
-            const airRate = 9500; // FCFA per kg
-            const seaRate = 2500; // Estimated share per item for sea cargo
+            const airRate = 9500;
+            const seaRate = 2500;
 
             return {
                 air: { cost: Math.round(weight * airRate), days: "10-14" },
@@ -86,8 +103,8 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
 
         const platformResults = [
             { name: "Alibaba / 1688", results: alibabaResults.map(p => ({ ...p, shipping: estimateShipping(p) })) },
-            { name: "Amazon Global", results: amazonResults.map(p => ({ ...p, shipping: estimateShipping(p) })) },
-            { name: "VMA Network", results: alibabaResults.slice(0, 1).map(p => ({ ...p, shipping: estimateShipping(p) })) }
+            { name: "AliExpress Global", results: aliexpressResults.map(p => ({ ...p, shipping: estimateShipping(p) })) },
+            { name: "Amazon Global", results: amazonResults.map(p => ({ ...p, shipping: estimateShipping(p) })) }
         ];
 
         res.json({

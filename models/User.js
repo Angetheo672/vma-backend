@@ -21,6 +21,8 @@ const UserSchema = new mongoose.Schema({
         bankDetails: String
     },
 
+    fcmToken: { type: String }, // Pour les notifications push
+
     createdAt: { type: Date, default: Date.now }
 });
 

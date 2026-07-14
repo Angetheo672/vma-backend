@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "vision-market-africa",
+  "private_key_id": "44218493fb4c4af0b01e4efb9787c064601d4dc1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDn+eMom6lnuK10\nnhgO4DiTCTTLoFre6oxPosgp/rvvwQeyTyDtK14CyR/8/Di74XSkTRUDRjJ+Z3jy\njKQG+pGRtQjB4Hs7QYLSZuiQnUy9r/KUgmmEJDg2fjqCeifeNKFiwmqSABfbEYNO\nzUHx5kyuOK0mnFCvLEp0CHgxtWDNLFZmGOeK1+Mh89Avgvx7FY2k+rULY4v+Hh1K\njVDwQOybdy5EThXljrNKTBhtf26ap+X3EIdrUFt4be2MjDksdl9uTBDroyA9HAb+\nKvBSMil5pOCHFvxsYpuP1XV8QOFZYmvFSQdukdZmysr2fSnYb6zJVmx849nDs3qy\nmbbxP8NHAgMBAAECggEACsu8YKVt6t/TYrwAzqBswZsKE/fwgrNTuFkRC7NJN805\n+HhqRd9gzqxhirqKQWQqs4LK2Y4ox201WcRl1dVPdQKB19QEqCtSVUxowmIvshxA\nI9013+p3m0Ggo3Xf6R117Uyy/Px4H7/e5ony6bkYFHuaw1M/Bgf/pwrF3TpduO6i\nmveWWbwivVZgzv3sPuv4mHtCcx9ynSnzAMG/ZwEbssigOU7GfL/bsu0tIjnfumag\n7j/KGpk2e9/2XAlhrIYRENsILM5YztBMj72BNbA6QA5uaQNNASDKVwZPyAXnaB+L\norWZn7jHvKcfQ7vtdGO1XsDFMPbG3auDnkiaCkdfEQKBgQD+DJU0wtRTgFvpbUY8\noM+yp70xuVMrP7rkMcHYm+VyjhU/yFDRSv+Wi7S7DAcZwwEzCwjZR6Kp5wglkV7l\n9a9fTPXrAkgquY1nA+3Wg+1Vksh2mxFblzi+ZaGrDei0Qg9sRoLR5Ol7vNRtxznJ\n1MpiKZR6/xyoIiDqnmcpH7/1hQKBgQDpwemm62S3oNP8d3lqADFqeqaFTYpF1Vae\nbi1S/+Best+/p40mF2ypWkzTcVVAK+Qx7M8UK8slz03BmiursFYPKTfYXqbeQCYY\nVg6wc6q6spi5M+TkcqRI88ITbQcksgT1kc6+Em/T6a4v9L6orMKFVuQGf0qmQzLE\n+XzkiFuZWwKBgQD6qUGisEU9Kl4FoDr34RdtSBHleNy1xIjLVMjVx2QJtmUC7MvI\n5X3vdWLaV1C+O2j4iv+tGwBFMV4Zayi+Lr5dgpr1yOeZuEDrjrXhvYOztkMyu2fR\n/hAP1ElCdFPRX4jGJYA4RuuUmkjjE/pRyTHyzuHgxcvpnNrrg2V37wrA3QKBgQCq\npmnQ9d/dPogDs6TrgaCRv2B5yJW9TXWiy4RDJ5HBEIzP+Z3NxSQKrmWPpxk5c9Fv\nsRWsAByaSbDWOZrQCDeLcefXCaKAdgxZj9nBb2+gRGnCKuRa8maE648vZ1TjsSJ1\ntDBeCk+hQONtFxtpQFXxyfFF3P++SShzLD/FBtb4KQKBgQC8F4H1AEh35qgC36Pd\n92sHhqTOfseiF8vmy/ezhubX1BntbaHGDfnySN6B51RUtkNnTKmbwQEzvHbD/5pN\n1v7W8nei1/5W6K4rPpjtLhMlP12u2Qki6L9XlCvmq8vWiM5/xDzFdsTJpX2Tp7zE\n48aAgGUWWnR34aNlfR0I2U5pXQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@vision-market-africa.iam.gserviceaccount.com",
+  "client_id": "106975371839052929363",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40vision-market-africa.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

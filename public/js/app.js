@@ -27,7 +27,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateCartBadge();
     initVMAComponents();
     initRealTimeSearch(); // Active la recherche instantanée
+
+    // Auto-sync FCM Token if logged in
+    const fcmToken = localStorage.getItem('fcm_token');
+    if (fcmToken && localStorage.getItem('vma_token')) {
+        API.updateFCMToken(fcmToken).catch(e => console.log("FCM Sync deferred"));
+    }
 });
+
+function updateFCMToken(token) {
+    localStorage.setItem('fcm_token', token);
+    if (localStorage.getItem('vma_token')) {
+        API.updateFCMToken(token).then(() => console.log("FCM Token Synced"));
+    }
+}
 
 // 0. USER PROFILE MANAGEMENT
 function updateUserProfile() {
@@ -212,4 +225,18 @@ function showSkeletons() {
     const feed = document.getElementById('productFeed');
     if (!feed) return;
     feed.innerHTML = Array(4).fill(0).map(() => `<div class="skeleton-card"><div class="skeleton-img"></div></div>`).join('');
+}
+
+// 4. SCANNER HANDLER
+function onScanResult(result) {
+    console.log("Code scanné :", result);
+    if (window.Android) Android.showToast("Code détecté : " + result);
+
+    // Si c'est un lien, on l'ouvre
+    if (result.startsWith('http')) {
+        location.href = result;
+    } else {
+        // Sinon on lance une recherche
+        location.href = 'search.html?query=' + encodeURIComponent(result);
+    }
 }

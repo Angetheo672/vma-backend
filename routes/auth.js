@@ -46,4 +46,16 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// @route   POST api/auth/fcm-token
+// @desc    Update FCM Token for notifications
+router.post('/fcm-token', require('../middleware/auth'), async (req, res) => {
+    try {
+        const { token } = req.body;
+        await User.findByIdAndUpdate(req.user.id, { fcmToken: token });
+        res.json({ msg: "FCM Token mis à jour" });
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
 module.exports = router;
