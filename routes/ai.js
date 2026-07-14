@@ -67,23 +67,23 @@ router.post('/chat', async (req, res) => {
             }
         }
 
-        // 2. REPLI : OPENAI
+        // 2. REPLI : OPENAI (UPGRADED TO GPT-4o-mini for better intelligence)
         if (!aiResponse) {
             const openai = getOpenAIClient();
             if (openai) {
                 try {
-                    console.log("--> Appel à OpenAI (Fallback)...");
+                    console.log("--> Appel à OpenAI GPT-4o-mini (Elite Fallback)...");
                     const completion = await openai.chat.completions.create({
-                        model: "gpt-3.5-turbo",
+                        model: "gpt-4o-mini",
                         messages: [
                             { role: "system", content: context },
                             { role: "user", content: query }
                         ],
-                        max_tokens: 500,
-                        timeout: 15000
+                        max_tokens: 800,
+                        temperature: 0.7
                     });
                     aiResponse = completion.choices[0].message.content;
-                    console.log("✅ Réponse OpenAI reçue.");
+                    console.log("✅ Réponse OpenAI Elite reçue.");
                 } catch (err) {
                     console.error("❌ Échec OpenAI:", err.message);
                 }
