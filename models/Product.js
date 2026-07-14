@@ -14,6 +14,7 @@ const ProductSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     isPromo: { type: Boolean, default: false },
     discountPrice: Number,
+    vmaId: { type: String, unique: true }, // Le numéro de suivi du produit
     attributes: {
         color: [String],
         size: [String],

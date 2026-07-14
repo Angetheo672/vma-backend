@@ -29,6 +29,11 @@ const createProduct = async (req, res) => {
     return res.status(400).json({ message: 'Tous les champs requis doivent être remplis.' });
   }
 
+  // GÉNÉRATION AUTOMATIQUE DU VMA-ID
+  const timestamp = Date.now().toString().slice(-4);
+  const randomStr = Math.random().toString(36).substring(2, 5).toUpperCase();
+  const vmaId = `VMA-PRD-${timestamp}-${randomStr}`;
+
   const product = await Product.create({
     name,
     description,
@@ -36,7 +41,8 @@ const createProduct = async (req, res) => {
     price,
     quantity,
     imageUrl,
-    vendor
+    vendor,
+    vmaId // Enregistrement du numéro de suivi
   });
 
   res.status(201).json(product);
