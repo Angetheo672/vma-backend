@@ -34,7 +34,26 @@ app.use((req, res, next) => {
 
 // DATABASE CONNECTION
 const connectDB = require('./config/db');
-connectDB();
+const Product = require('./models/Product'); // Import du modèle pour la migration
+
+connectDB().then(async () => {
+    console.log("Vérification des numéros de suivi produits...");
+    try {
+        const productsToUpdate = await Product.find({ vmaId: { $exists: false } });
+        if (productsToUpdate.length > 0) {
+            console.log(`${productsToUpdate.length} produits sans ID trouvés. Génération en cours...`);
+            for (let product of productsToUpdate) {
+                const timestamp = Date.now().toString().slice(-4);
+                const randomStr = Math.random().toString(36).substring(2, 5).toUpperCase();
+                product.vmaId = `VMA-PRD-${timestamp}-${randomStr}`;
+                await product.save();
+            }
+            console.log("Tous les produits ont maintenant un numéro de suivi !");
+        }
+    } catch (err) {
+        console.error("Erreur lors de la migration des IDs :", err);
+    }
+});
 
 // Health Check
 app.get('/health', (req, res) => {
