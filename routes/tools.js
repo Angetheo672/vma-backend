@@ -67,15 +67,34 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
         // 3. Construct Google Search Image Link (Deep Search)
         const googleLensUrl = `https://www.google.com/searchbyimage?image_url=${encodeURIComponent(imageUrl)}`;
 
+        // 4. Enhanced Shipping Estimation Logic
+        const estimateShipping = (product) => {
+            // Logic based on price/category to guess weight/vol
+            const price = product.price;
+            let weight = 0.5; // Default 500g
+            if (price > 100000) weight = 2.5; // Laptops/Large electronics
+            if (price > 500000) weight = 5.0; // Very large items
+
+            const airRate = 9500; // FCFA per kg
+            const seaRate = 2500; // Estimated share per item for sea cargo
+
+            return {
+                air: { cost: Math.round(weight * airRate), days: "10-14" },
+                sea: { cost: Math.round(weight * seaRate), days: "45-60" }
+            };
+        };
+
+        const platformResults = [
+            { name: "Alibaba / 1688", results: alibabaResults.map(p => ({ ...p, shipping: estimateShipping(p) })) },
+            { name: "Amazon Global", results: amazonResults.map(p => ({ ...p, shipping: estimateShipping(p) })) },
+            { name: "VMA Network", results: alibabaResults.slice(0, 1).map(p => ({ ...p, shipping: estimateShipping(p) })) }
+        ];
+
         res.json({
             imageUrl,
             detectedKeywords: keywords,
             googleLensUrl,
-            platforms: [
-                { name: "Alibaba / 1688", results: alibabaResults },
-                { name: "Amazon Global", results: amazonResults },
-                { name: "VMA Network", results: alibabaResults.slice(0, 1) }
-            ],
+            platforms: platformResults,
             msg: "Analyse globale terminée"
         });
 
