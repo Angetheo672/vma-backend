@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion | Vision Market Africa</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <a href="index.html">
+                <img src="images/logo.jpeg" class="login-logo" alt="VMA Logo" onerror="this.src='https://via.placeholder.com/90?text=VMA'">
+            </a>
+            <h2>Bon retour !</h2>
+            <p>Connectez-vous pour accéder à votre compte VMA</p>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="input-box">
+                    <i class="fa fa-envelope"></i>
+                    <input type="email" id="email" placeholder="Adresse Email" required>
+                </div>
+                <div class="input-box">
+                    <i class="fa fa-lock"></i>
+                    <input type="password" id="password" placeholder="Mot de passe" required>
+                </div>
+
+                <div style="text-align: right; margin-bottom: 20px;">
+                    <a href="forgot-password.html" style="font-size: 13px; color: #777;">Mot de passe oublié ?</a>
+                </div>
+
+                <button type="submit">Se connecter</button>
+
+                <p style="margin-top: 25px; font-size: 14px; color: #ccc;">
+                    Pas encore de compte ? <a href="register.html" style="display: inline; color: var(--primary-color);">Créer un compte</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            // Generate a fake JWT token for investor demo
+            const fakeToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + btoa(JSON.stringify({sub: email, role: 'buyer'})) + ".signature";
+
+            localStorage.setItem('vma_token', fakeToken);
+            localStorage.setItem('vma_logged_in', 'true');
+
+            location.href = 'gateway.html';
+        }
+    </script>
+</body>
+</html>

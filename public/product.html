@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Détails du Produit | VMA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell">
+    <header class="app-header transparent" style="position: absolute; top: 0; width: 100%; z-index: 100; padding-top: env(safe-area-inset-top);">
+        <div style="padding: 15px; display: flex; justify-content: space-between;">
+            <div class="header-btn" onclick="history.back()"><i class="fa fa-chevron-left"></i></div>
+            <div class="header-btn" onclick="shareProduct()"><i class="fa fa-share-nodes"></i></div>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding-top: 0;">
+        <!-- PRODUCT IMAGES SLIDER -->
+        <div id="productGallery" style="width: 100%; aspect-ratio: 1; background: #000; position: relative;">
+            <img id="mainImage" src="" style="width: 100%; height: 100%; object-fit: cover;">
+            <div id="imageCounter" style="position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.5); color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 10px;">1/1</div>
+        </div>
+
+        <div class="p-16">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <h1 id="productName" style="font-size: 20px; font-weight: 700; flex: 1;">Chargement...</h1>
+                <div id="favBtn" style="font-size: 20px; color: var(--vma-gold); padding-left: 15px;"><i class="fa-regular fa-heart"></i></div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                <span id="productPrice" style="font-size: 24px; font-weight: 800; color: var(--vma-gold);">0 F</span>
+                <span id="oldPrice" style="text-decoration: line-through; color: var(--text-muted); font-size: 14px;"></span>
+            </div>
+
+            <div class="verified-badge-inline" id="verifiedBadge" style="display: none;">
+                <i class="fa fa-check-circle"></i> Vendeur Vérifié
+            </div>
+
+            <div style="margin: 20px 0; padding: 15px; background: #111; border-radius: 15px;">
+                <h3 style="font-size: 14px; margin-bottom: 10px;">Description</h3>
+                <p id="productDesc" style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">...</p>
+            </div>
+
+            <!-- SUPPLIER CARD -->
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 20px; padding: 10px; border: 1px solid #222; border-radius: 12px;">
+                <img src="https://via.placeholder.com/40" style="border-radius: 50%;">
+                <div style="flex: 1;">
+                    <div id="supplierName" style="font-size: 13px; font-weight: 600;">VMA Supplier</div>
+                    <div style="font-size: 11px; color: var(--vma-green);">98% Avis Positifs</div>
+                </div>
+                <button class="vma-btn-outline" style="padding: 5px 15px; font-size: 11px;">Suivre</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ACTION BAR -->
+    <div style="position: fixed; bottom: 0; width: 100%; background: #000; padding: 15px; border-top: 1px solid #222; display: flex; gap: 10px; z-index: 1000; padding-bottom: calc(15px + env(safe-area-inset-bottom));">
+        <div class="action-icon-btn" onclick="contactWhatsApp()"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i></div>
+        <div class="action-icon-btn" onclick="location.href='chat.html'"><i class="fa-regular fa-comment"></i></div>
+        <button class="vma-btn-outline" style="flex: 1; padding: 12px; font-size: 13px;" onclick="addToCart()">PANIER</button>
+        <button class="vma-btn-primary" style="flex: 1; padding: 12px; font-size: 13px;" onclick="buyNow()">ACHETER</button>
+    </div>
+
+    <style>
+        .header-btn { width: 35px; height: 35px; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; }
+        .action-icon-btn { width: 45px; height: 45px; background: #111; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+        .verified-badge-inline { background: rgba(82,196,26,0.1); color: var(--vma-green); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; }
+    </style>
+
+    <script src="js/api.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        let currentProduct = null;
+
+        // CONFIGURATION WHATSAPP VMA
+        const VMA_WHATSAPP_NUMBER = "+237600000000"; // CHANGEZ VOTRE NUMÉRO ICI
+
+        function contactWhatsApp() {
+            if(!currentProduct) return;
+            const message = `Bonjour Vision Market Africa, je suis intéressé par le produit: ${currentProduct.name} (Prix: ${formatPrice(currentProduct.price)} F). Pouvez-vous m'en dire plus ?`;
+            const url = `https://wa.me/${VMA_WHATSAPP_NUMBER.replace('+', '')}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!productId) return history.back();
+            await loadProduct();
+        });
+
+        async function loadProduct() {
+            try {
+                const product = await API.getProductById(productId);
+                currentProduct = product;
+
+                document.getElementById('productName').innerText = product.name;
+                document.getElementById('productPrice').innerText = formatPrice(product.price) + ' F';
+                document.getElementById('productDesc').innerText = product.description;
+                document.getElementById('mainImage').src = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/400';
+
+                if (product.isVerified) document.getElementById('verifiedBadge').style.display = 'inline-flex';
+                if (product.supplier) document.getElementById('supplierName').innerText = product.supplier.companyName || product.supplier.firstName;
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function addToCart() {
+            let cart = JSON.parse(localStorage.getItem('vma_cart')) || [];
+            cart.push(currentProduct);
+            localStorage.setItem('vma_cart', JSON.stringify(cart));
+            if(window.Android) Android.showToast("Ajouté au panier !");
+            else alert("Ajouté au panier !");
+        }
+
+        function buyNow() {
+            addToCart();
+            location.href = 'cart.html';
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR').format(price);
+        }
+    </script>
+</body>
+</html>

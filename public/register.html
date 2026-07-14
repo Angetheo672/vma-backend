@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription | Vision Market Africa</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <a href="index.html">
+                <img src="images/logo.jpeg" class="login-logo" alt="VMA Logo" onerror="this.src='https://via.placeholder.com/90?text=VMA'">
+            </a>
+            <h2>Créer un compte</h2>
+            <p>Rejoignez la plus grande plateforme de commerce en Afrique</p>
+
+            <form id="registerForm">
+                <div class="input-box">
+                    <i class="fa fa-user"></i>
+                    <input type="text" placeholder="Nom complet" required>
+                </div>
+                <div class="input-box">
+                    <i class="fa fa-envelope"></i>
+                    <input type="email" placeholder="Adresse Email" required>
+                </div>
+                <div class="input-box">
+                    <i class="fa fa-phone"></i>
+                    <input type="tel" placeholder="Numéro de téléphone" required>
+                </div>
+                <div class="input-box">
+                    <i class="fa fa-lock"></i>
+                    <input type="password" placeholder="Mot de passe" required>
+                </div>
+
+                <button type="submit">S'inscrire</button>
+
+                <p style="margin-top: 25px; font-size: 14px; color: #ccc;">
+                    Déjà un compte ? <a href="login.html" style="display: inline; color: var(--primary-color);">Se connecter</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>

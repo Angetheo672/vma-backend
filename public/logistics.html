@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Suivi Logistique VMA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold);"></i>
+            <span class="brand-name">SUIVI LOGISTIQUE AI</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <!-- TRACKING INPUT -->
+        <div style="background: #111; padding: 20px; border-radius: 20px; border: 1px solid #222; margin-bottom: 25px;">
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="trackingCode" placeholder="Code de suivi (VMA-XXXX)" style="flex: 1; background: #000; border: 1px solid #333; padding: 12px; border-radius: 12px; color: #fff; font-family: inherit; outline: none;">
+                <button onclick="openScanner()" style="width: 50px; height: 50px; background: #222; border: 1px solid #333; border-radius: 12px; color: var(--vma-gold);">
+                    <i class="fa fa-qrcode"></i>
+                </button>
+                <button onclick="trackOrder()" style="width: 50px; height: 50px; background: var(--vma-gold); border: none; border-radius: 12px; color: #000;">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- TIMELINE (AMAZON STYLE) -->
+        <div id="trackingResult" style="display: none; animation: fadeIn 0.5s ease;">
+            <div style="background: #1a1a1a; padding: 25px; border-radius: 20px; border: 1px solid #222;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div>
+                        <div style="font-size: 11px; color: var(--text-muted);">Statut Actuel</div>
+                        <div style="font-size: 16px; font-weight: 800; color: var(--vma-gold);">En Transit</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 11px; color: var(--text-muted);">Arrivée estimée</div>
+                        <div style="font-size: 14px; font-weight: 700;">14 Oct. 2026</div>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item active">
+                        <div class="dot"></div>
+                        <div class="info">
+                            <div class="title">Douala, Cameroun</div>
+                            <div class="desc">Arrivée au centre de tri local</div>
+                            <div class="time">Aujourd'hui, 09:45</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item active">
+                        <div class="dot"></div>
+                        <div class="info">
+                            <div class="title">En Mer (Atlantique)</div>
+                            <div class="desc">Quitté le port de Guangzhou</div>
+                            <div class="time">05 Oct. 2026</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="dot"></div>
+                        <div class="info">
+                            <div class="title">Guangzhou, Chine</div>
+                            <div class="desc">Colis reçu à l'entrepôt VMA</div>
+                            <div class="time">01 Oct. 2026</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .timeline { position: relative; padding-left: 20px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 4px; top: 0; bottom: 0; width: 2px; background: #333;
+        }
+        .timeline-item { position: relative; padding-bottom: 30px; }
+        .timeline-item .dot {
+            position: absolute; left: -20px; top: 5px; width: 10px; height: 10px; background: #444; border-radius: 50%; z-index: 2;
+        }
+        .timeline-item.active .dot { background: var(--vma-gold); box-shadow: 0 0 10px var(--vma-gold); }
+        .timeline-item.active::after {
+            content: ''; position: absolute; left: -16px; top: 5px; bottom: 0; width: 2px; background: var(--vma-gold); z-index: 1;
+        }
+        .timeline-item .info .title { font-size: 13px; font-weight: 700; color: #fff; }
+        .timeline-item .info .desc { font-size: 11px; color: var(--text-muted); margin: 2px 0; }
+        .timeline-item .info .time { font-size: 10px; color: var(--vma-gold); opacity: 0.7; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+
+    <script>
+        function trackOrder() {
+            const code = document.getElementById('trackingCode').value;
+            if (!code) return;
+            document.getElementById('trackingResult').style.display = 'block';
+        }
+
+        function openScanner() {
+            if (window.Android) {
+                Android.showToast("Ouverture du scanner QR/Barcode...");
+                // In a real app, this would call native scanner
+                // Android.startScanning();
+            } else {
+                alert("Scanner simulé. Entrez VMA-8829 manuellement.");
+            }
+        }
+
+        // Bridge for native scanner to return result
+        window.onScanResult = (result) => {
+            document.getElementById('trackingCode').value = result;
+            trackOrder();
+        };
+    </script>
+</body>
+</html>

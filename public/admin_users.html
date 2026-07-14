@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestion Utilisateurs | VMA Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="background: var(--vma-blue);">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: #fff;"></i>
+            <span class="brand-name" style="color: #fff;">UTILISATEURS & VENDEURS</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div id="userList" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- User items -->
+            <div class="user-card">
+                <div style="flex: 1;">
+                    <div style="font-size: 14px; font-weight: 700;">Moussa Sourcing</div>
+                    <div style="font-size: 11px; color: var(--vma-gold);">Rôle: Supplier (En attente)</div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-action green" onclick="validateUser('123')"><i class="fa fa-check"></i></button>
+                    <button class="btn-action red" onclick="rejectUser('123')"><i class="fa fa-xmark"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .user-card { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; display: flex; align-items: center; }
+        .btn-action { width: 40px; height: 40px; border: none; border-radius: 10px; color: #fff; font-size: 16px; }
+        .btn-action.green { background: var(--vma-green); }
+        .btn-action.red { background: var(--vma-accent-red); }
+    </style>
+
+    <script>
+        function validateUser(id) {
+            alert("Vendeur validé avec succès ! Il peut désormais publier ses produits.");
+        }
+        function rejectUser(id) {
+            confirm("Voulez-vous vraiment refuser ce vendeur ?");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Importation en Masse | VMA Seller</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="height: 60px; display: flex; align-items: center; background: #111;">
+        <div class="header-top" style="width: 100%; margin-bottom: 0;">
+            <div class="logo-area">
+                <a href="seller_dashboard.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-chevron-left" style="color: var(--vma-gold);"></i>
+                    <span style="font-weight: 700;">IMPORT PRODUITS</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 40px;">
+        <div style="background: #1a1a1a; padding: 25px; border-radius: 20px; border: 1px solid #222; text-align: center;">
+            <i class="fa fa-file-csv" style="font-size: 40px; color: var(--vma-blue); margin-bottom: 20px;"></i>
+            <h3 style="font-size: 16px; margin-bottom: 10px;">Importer via CSV / Excel</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Ajoutez des centaines de produits en un clic à votre catalogue.</p>
+
+            <label class="file-label">
+                <i class="fa fa-cloud-upload"></i> Sélectionner un fichier
+                <input type="file" accept=".csv, .xlsx" onchange="handleBulk()">
+            </label>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <h4 style="font-size: 14px; margin-bottom: 15px;">Lien 1688 / Taobao</h4>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" placeholder="Lien vers le magasin chinois..." style="flex: 1; background: #111; border: 1px solid #333; padding: 12px; border-radius: 10px; color: #fff; outline: none; font-family: inherit;">
+                <button class="add-btn" style="width: auto; padding: 0 20px; border-radius: 10px;" onclick="alert('Synchronisation avec 1688 API...')">SYNC</button>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .file-label {
+            display: block; background: #000; border: 1px dashed var(--vma-blue); color: var(--vma-blue); padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer;
+        }
+        .file-label input { display: none; }
+    </style>
+
+    <script>
+        function handleBulk() {
+            alert("Analyse du fichier en cours... 42 produits détectés. Importation lancée.");
+            location.href = "seller_dashboard.html";
+        }
+    </script>
+</body>
+</html>

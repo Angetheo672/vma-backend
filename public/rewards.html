@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Coupons & Cadeaux | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="height: 60px; display: flex; align-items: center; background: #111;">
+        <div class="header-top" style="width: 100%; margin-bottom: 0;">
+            <div class="logo-area">
+                <a href="javascript:history.back()" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-chevron-left" style="color: var(--vma-gold);"></i>
+                    <span style="font-weight: 700;">MES COUPONS</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 70px 16px 20px;">
+        <!-- Points Bar -->
+        <div style="background: linear-gradient(90deg, #111, #222); padding: 20px; border-radius: 15px; border: 1px solid var(--vma-gold); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <span style="font-size: 11px; color: var(--text-muted);">Points Fidélité</span>
+                <div style="font-size: 20px; font-weight: 800; color: var(--vma-gold);">2,450 pts</div>
+            </div>
+            <button style="background: var(--vma-gold); border: none; padding: 8px 15px; border-radius: 8px; font-size: 11px; font-weight: 700;">Convertir</button>
+        </div>
+
+        <h3 style="font-size: 14px; margin-bottom: 15px; color: var(--text-muted);">DISPONIBLES</h3>
+
+        <!-- Coupon 1 -->
+        <div class="coupon-card">
+            <div class="coupon-val">-15%</div>
+            <div class="coupon-info">
+                <h4 style="font-size: 13px;">Réduction Spéciale Sourcing</h4>
+                <p style="font-size: 10px; color: var(--text-muted);">Valable sur tous les imports Chine (Air)</p>
+                <span style="font-size: 9px; color: var(--vma-accent-red);">Expire dans 2 jours</span>
+            </div>
+            <button class="coupon-btn">UTILISER</button>
+        </div>
+
+        <!-- Coupon 2 -->
+        <div class="coupon-card">
+            <div class="coupon-val">5.000 F</div>
+            <div class="coupon-info">
+                <h4 style="font-size: 13px;">Coupon Nouveau Vendeur</h4>
+                <p style="font-size: 10px; color: var(--text-muted);">Sur votre premier achat de plus de 50.000 F</p>
+            </div>
+            <button class="coupon-btn disabled">UTILISÉ</button>
+        </div>
+    </main>
+
+    <style>
+        .coupon-card {
+            background: #1a1a1a; display: flex; align-items: center; border-radius: 12px; overflow: hidden; border: 1px solid #333; margin-bottom: 15px;
+        }
+        .coupon-val {
+            background: var(--vma-gold); color: #000; width: 70px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; position: relative;
+        }
+        .coupon-val::after { content: ''; position: absolute; right: -5px; top: 0; bottom: 0; width: 10px; background: radial-gradient(circle, #1a1a1a 40%, transparent 41%); background-size: 10px 10px; }
+        .coupon-info { flex: 1; padding: 0 15px; }
+        .coupon-btn { background: none; border: 1px solid var(--vma-gold); color: var(--vma-gold); padding: 5px 10px; border-radius: 6px; font-size: 9px; margin-right: 15px; font-weight: 700; }
+        .coupon-btn.disabled { border-color: #444; color: #444; }
+    </style>
+</body>
+</html>

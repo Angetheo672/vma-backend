@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Recherche Globale AI | VMA Emma</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="height: 70px; display: flex; align-items: center; border-bottom: 1px solid #222;">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; width: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold); font-size: 20px;"></i>
+            <span style="font-size: 16px; font-weight: 700; color: #fff;">DÉCOUVERTE GLOBALE AI</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 20px 16px;">
+
+        <div class="visual-header" style="margin-bottom: 30px; text-align: center;">
+            <p style="color: var(--vma-gold); font-size: 11px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase;">Aggregator Intelligence</p>
+            <h2 style="font-size: 22px; color: #fff;">Sourcing Mondial par Image</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Emma analyse votre photo et cherche sur Google, Alibaba et 1688 simultanément.</p>
+        </div>
+
+        <!-- CAPTURE AREA -->
+        <div id="captureArea" class="role-card" style="flex-direction: column; gap: 20px; padding: 40px 20px; border-style: dashed; border-color: var(--vma-gold); background: rgba(255,215,0,0.05);" onclick="document.getElementById('imageInput').click()">
+            <div id="iconPlaceholder" style="width: 80px; height: 80px; background: rgba(255,215,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fa fa-camera" style="font-size: 35px; color: var(--vma-gold);"></i>
+            </div>
+            <div id="textPlaceholder">
+                <h3 style="color: #fff; font-size: 16px;">Scanner ou Importer</h3>
+                <p style="color: var(--text-muted); font-size: 12px;">Prenez une photo ou choisissez dans la galerie</p>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" capture="environment" style="display: none;">
+            <img id="previewImg" style="display: none; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 15px; border: 2px solid var(--vma-gold);">
+        </div>
+
+        <!-- SEARCH ACTION -->
+        <div id="searchAction" style="display: none; margin-top: 25px; animation: slideUp 0.3s;">
+            <button id="searchBtn" class="vma-btn-primary" style="width: 100%; height: 60px;" onclick="performGlobalSearch()">
+                <i class="fa fa-globe" style="margin-right: 10px;"></i> LANCER LA RECHERCHE MONDIALE
+            </button>
+            <p onclick="location.reload()" style="color: var(--text-muted); font-size: 12px; margin-top: 15px; text-decoration: underline; text-align: center;">Annuler</p>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div id="visualResults" style="margin-top: 40px; display: none;">
+
+            <!-- Google Deep Link -->
+            <div id="googleSection" style="margin-bottom: 30px;">
+                <div style="background: #fff; padding: 15px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://www.google.com/favicon.ico" style="width: 20px;">
+                        <span style="color: #000; font-weight: 700; font-size: 13px;">Voir sur Google Lens</span>
+                    </div>
+                    <button onclick="openGoogleLens()" style="background: #4285F4; color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 600; font-size: 11px;">OUVRIR</button>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <div style="height: 20px; width: 4px; background: var(--vma-gold); border-radius: 2px;"></div>
+                <h3 style="font-size: 16px; font-weight: 700; color: #fff;">OFFRES 1688 / ALIBABA</h3>
+            </div>
+            <div class="main-grid" id="resultsGrid">
+                <!-- Matches injected here -->
+            </div>
+        </div>
+
+        <!-- LOADING OVERLAY -->
+        <div id="loadingOverlay" style="display: none; margin-top: 30px; text-align: center;">
+            <div class="spinner" style="width: 40px; height: 40px; border: 4px solid #222; border-top-color: var(--vma-gold); border-radius: 50%; margin: 0 auto 15px; animation: spin 1s linear infinite;"></div>
+            <p style="color: var(--vma-gold); font-size: 13px; font-weight: 600;">Emma décrypte l'image et interroge les API mondiales...</p>
+        </div>
+    </main>
+
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+
+    <script src="js/api.js"></script>
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const previewImg = document.getElementById('previewImg');
+        const searchAction = document.getElementById('searchAction');
+        const captureArea = document.getElementById('captureArea');
+        let currentLensUrl = "";
+
+        imageInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    previewImg.src = re.target.result;
+                    previewImg.style.display = 'block';
+                    document.getElementById('iconPlaceholder').style.display = 'none';
+                    document.getElementById('textPlaceholder').style.display = 'none';
+                    captureArea.style.borderStyle = 'solid';
+                    captureArea.style.padding = '10px';
+                    searchAction.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        async function performGlobalSearch() {
+            const file = imageInput.files[0];
+            const overlay = document.getElementById('loadingOverlay');
+            const results = document.getElementById('visualResults');
+
+            searchAction.style.display = 'none';
+            overlay.style.display = 'block';
+            results.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                // Real backend call for visual search
+                const response = await fetch(`${API_BASE_URL}/tools/visual-search`, {
+                    method: 'POST',
+                    headers: { 'x-auth-token': localStorage.getItem('vma_token') },
+                    body: formData
+                });
+
+                const data = await response.json();
+                currentLensUrl = data.googleLensUrl;
+
+                let allResults = [];
+                data.platforms.forEach(platform => {
+                    if (platform.results) {
+                        platform.results.forEach(res => {
+                            res.platformName = platform.name;
+                            allResults.push(res);
+                        });
+                    }
+                });
+
+                overlay.style.display = 'none';
+                results.style.display = 'block';
+
+                const grid = document.getElementById('resultsGrid');
+                grid.innerHTML = allResults.map(product => `
+                    <div class="modern-card" style="animation: slideUp 0.5s ease-out; height: auto; padding-bottom: 15px;">
+                        <div class="card-image-wrap">
+                            <img src="${product.image}" alt="${product.name}">
+                            <div class="source-tag" style="background: ${product.source === '1688' ? '#ff6600' : (product.source === 'Amazon' ? '#232f3e' : 'var(--vma-gold)')}">${product.platformName || product.source}</div>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="product-name" style="height: 40px; overflow: hidden;">${product.name}</h3>
+                            <div class="price-row">
+                                <span class="current-price" style="font-size: 16px;">${product.price.toLocaleString()} F</span>
+                            </div>
+
+                            <!-- SHIPPING COMPARISON SECTION -->
+                            <div class="shipping-compare" style="margin-top: 12px; border-top: 1px dashed #333; padding-top: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                    <span style="font-size: 10px; color: #aaa;"><i class="fa fa-plane"></i> Avion (Rapide)</span>
+                                    <span style="font-size: 10px; color: var(--vma-gold); font-weight: 700;">+${product.shipping.air.cost.toLocaleString()} F</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 10px; color: #aaa;"><i class="fa fa-ship"></i> Bateau (Éco)</span>
+                                    <span style="font-size: 10px; color: #2ecc71; font-weight: 700;">+${product.shipping.sea.cost.toLocaleString()} F</span>
+                                </div>
+                            </div>
+
+                            <button class="vma-btn-primary" style="width: 100%; height: 35px; font-size: 11px; margin-top: 12px; border-radius: 8px;" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(product.name)}', '_blank')">
+                                DÉTAILS & ACHAT
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                if(window.Android) Android.showToast("Analyse mondiale terminée !");
+
+            } catch (err) {
+                overlay.style.display = 'none';
+                searchAction.style.display = 'block';
+                alert("Erreur: " + err.message);
+            }
+        }
+
+        function openGoogleLens() {
+            if(currentLensUrl) window.open(currentLensUrl, '_blank');
+        }
+    </script>
+</body>
+</html>

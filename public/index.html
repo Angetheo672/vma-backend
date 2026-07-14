@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vision Market Africa | Premium Global Trade</title>
+
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <!-- ELITE HEADER (Ticker moved inside for layout stability) -->
+        <header class="app-header">
+            <!-- 0. LIVE TRACKING TICKER -->
+            <div class="tracking-ticker" style="margin: -5px -16px 10px -16px; border-bottom: none; background: rgba(255,215,0,0.1); border-top: 1px solid rgba(255,215,0,0.2);">
+                <div class="ticker-content">
+                    <i class="fa fa-plane"></i> VMA-8829: Arrivé à Douala | <i class="fa fa-ship"></i> VMA-9021: En mer (Est. 12 jours) | <i class="fa fa-box"></i> VMA-7732: Livré à Yaoundé | <i class="fa fa-bolt"></i> Nouveau groupage 1688 ouvert!
+                </div>
+            </div>
+
+            <div class="header-top">
+                <div class="logo-area">
+                    <img src="images/logo.jpeg" class="app-logo" alt="VMA">
+                    <span class="brand-name">VISION MARKET</span>
+                </div>
+                <div class="header-actions">
+                    <a href="chat.html" style="color: inherit;"><i class="fa-regular fa-comment-dots"></i></a>
+                    <a href="notifications.html" style="color: inherit;"><i class="fa-regular fa-bell"></i></a>
+                </div>
+            </div>
+            <div class="search-container">
+                <i class="fa fa-search" onclick="location.href='search.html'"></i>
+                <input type="text" placeholder="Rechercher par photo ou lien 1688..." id="globalSearch" onclick="location.href='search.html'" readonly>
+                <i class="fa fa-camera" onclick="location.href='visual_search.html'"></i>
+            </div>
+        </header>
+
+        <!-- 2. SCROLLABLE CONTENT -->
+        <main class="scroll-container">
+
+            <!-- HERO PROMO SLIDER -->
+            <div class="hero-slider">
+                <img src="https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=1000&q=80" alt="Banner">
+                <div class="hero-overlay">
+                    <span class="hero-tag">Exclusivité Chine</span>
+                    <h3 style="font-size: 20px; margin-top: 5px;">Importations Directes & Groupées</h3>
+                </div>
+            </div>
+
+            <!-- SERVICE GRID (Alibaba Style) -->
+            <div class="service-grid">
+                <div class="service-item" onclick="location.href='import.html'">
+                    <div class="service-icon"><i class="fa fa-ship"></i></div>
+                    <span>Import</span>
+                </div>
+                <div class="service-item" onclick="location.href='groupbuy.html'">
+                    <div class="service-icon"><i class="fa fa-users"></i></div>
+                    <span>Groupés</span>
+                </div>
+                <div class="service-item" onclick="location.href='calculator.html'">
+                    <div class="service-icon" style="border-color: var(--vma-blue); color: var(--vma-blue);"><i class="fa fa-calculator"></i></div>
+                    <span>Calculateur</span>
+                </div>
+                <div class="service-item" onclick="location.href='logistics.html'">
+                    <div class="service-icon"><i class="fa fa-box-open"></i></div>
+                    <span>Suivi</span>
+                </div>
+            </div>
+
+            <!-- PINDUODUO SECTION (Group Buying / Social) -->
+            <div class="group-buy-section">
+                <div class="section-title">
+                    <h2>Achats Groupés <span class="badge-red">LIVE</span></h2>
+                    <a href="groupbuy.html" style="font-size: 12px; color: var(--vma-gold); text-decoration: none;">Voir tout ></a>
+                </div>
+                <div class="group-cards" id="groupBuyContainer">
+                    <!-- Dynamic Group Buy Cards -->
+                    <div class="group-card">
+                        <img src="images/17pro.jpg" alt="17 Pro">
+                        <div class="group-price">485.000 F</div>
+                        <div class="buyer-avatars">
+                            <div class="avatar"></div>
+                            <div class="avatar"></div>
+                            <div class="avatar" style="background: var(--vma-gold); color: #000; font-size: 8px; display: flex; align-items: center; justify-content: center;">+12</div>
+                        </div>
+                        <span style="font-size: 10px; color: var(--text-muted);">Plus que 2 places!</span>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="group-card">
+                        <img src="images/montrerolex.jpg" alt="Rolex">
+                        <div class="group-price">12.500 F</div>
+                        <div class="buyer-avatars">
+                            <div class="avatar"></div>
+                            <div class="avatar" style="background: var(--vma-gold); color: #000; font-size: 8px; display: flex; align-items: center; justify-content: center;">+45</div>
+                        </div>
+                        <span style="font-size: 10px; color: var(--text-muted);">Offre limitée</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AMAZON STYLE PRODUCT FEED -->
+            <div class="feed-header">SÉLECTION POUR VOUS</div>
+            <div class="main-grid" id="productFeed">
+                <!-- Products injected by app.js -->
+            </div>
+
+            <!-- FOOTER LEGAL -->
+            <div style="text-align: center; padding: 40px 16px; opacity: 0.3; font-size: 9px;">
+                <p>© 2026 Vision Market Africa - Global Trade Logistics</p>
+                <p><a href="terms.html" style="color: inherit;">Conditions d'Utilisation</a> | <a href="terms.html" style="color: inherit;">Confidentialité</a></p>
+            </div>
+        </main>
+
+        <!-- 3. ELITE BOTTOM NAV -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active">
+                <i class="fa fa-home"></i>
+                <span>Accueil</span>
+            </a>
+            <a href="marketplace.html" class="nav-item">
+                <i class="fa fa-compass"></i>
+                <span>Explorer</span>
+            </a>
+            <a href="cart.html" class="nav-item" style="position: relative;">
+                <i class="fa fa-shopping-bag"></i>
+                <span>Panier</span>
+                <div class="cart-badge" id="cart-count">0</div>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fa fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

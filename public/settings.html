@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Paramètres | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="height: 60px; display: flex; align-items: center; background: #111;">
+        <div class="header-top" style="width: 100%; margin-bottom: 0;">
+            <div class="logo-area">
+                <a href="javascript:history.back()" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-chevron-left" style="color: var(--vma-gold);"></i>
+                    <span style="font-weight: 700;">PARAMÈTRES</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 70px 16px 20px;">
+        <div class="settings-group">
+            <h4 class="settings-label">Apparence</h4>
+            <div class="setting-item">
+                <span>Mode Sombre (Premium)</span>
+                <div class="toggle active"></div>
+            </div>
+            <div class="setting-item">
+                <span>Langue</span>
+                <span style="color: var(--vma-gold);">Français <i class="fa fa-chevron-right"></i></span>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <h4 class="settings-label">Sécurité</h4>
+            <div class="setting-item" onclick="alert('Changement de mot de passe...')">
+                <span>Changer mon mot de passe</span>
+                <i class="fa fa-lock" style="color: #444;"></i>
+            </div>
+            <div class="setting-item">
+                <span>Double Authentification</span>
+                <div class="toggle"></div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <h4 class="settings-label">Notifications</h4>
+            <div class="setting-item">
+                <span>Alertes de Livraison</span>
+                <div class="toggle active"></div>
+            </div>
+            <div class="setting-item">
+                <span>Promotions & Coupons</span>
+                <div class="toggle active"></div>
+            </div>
+        </div>
+
+        <button onclick="logout()" style="width: 100%; padding: 15px; background: none; border: 1px solid var(--vma-accent-red); color: var(--vma-accent-red); border-radius: 12px; margin-top: 30px; font-weight: 700; font-family: inherit;">
+            DÉCONNEXION
+        </button>
+
+        <p style="text-align: center; font-size: 10px; color: #333; margin-top: 20px;">VMA v2.4.0 (Alpha Production)</p>
+    </main>
+
+    <style>
+        .settings-group { margin-bottom: 30px; }
+        .settings-label { font-size: 11px; color: var(--vma-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .setting-item {
+            background: #111; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px;
+        }
+        .toggle { width: 40px; height: 20px; background: #333; border-radius: 20px; position: relative; }
+        .toggle::after { content: ''; position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .toggle.active { background: var(--vma-gold); }
+        .toggle.active::after { left: 22px; background: #000; }
+    </style>
+
+    <script>
+        function logout() {
+            if(confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                localStorage.clear();
+                location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

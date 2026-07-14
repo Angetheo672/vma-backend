@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mon Inventaire | VMA Seller</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="background: #111;">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold);"></i>
+            <span class="brand-name">MES PRODUITS</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div id="sellerProductList" style="background: #111; border-radius: 15px; border: 1px solid #222; overflow: hidden;">
+            <!-- Products injected here -->
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/seller.js"></script>
+</body>
+</html>

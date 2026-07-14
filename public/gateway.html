@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VMA Ecosystem Gateway</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body style="background: #000; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;">
+
+    <div class="gateway-wrapper" style="width: 100%; max-width: 450px; text-align: center; animation: fadeIn 0.8s ease-out;">
+
+        <!-- Premium Logo Header -->
+        <div style="margin-bottom: 40px;">
+            <img src="images/logo.jpeg" alt="VMA Logo" style="width: 90px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 0 30px rgba(255,215,0,0.3);">
+            <h1 style="font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 5px; letter-spacing: -1px;">VISION MARKET AFRICA</h1>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <div style="height: 1px; width: 30px; background: var(--vma-gold); opacity: 0.5;"></div>
+                <p style="color: var(--vma-gold); font-size: 11px; letter-spacing: 3px; font-weight: 600; text-transform: uppercase;">Connecting Africa to Global Trade</p>
+                <div style="height: 1px; width: 30px; background: var(--vma-gold); opacity: 0.5;"></div>
+            </div>
+        </div>
+
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 30px;">Choisissez votre profil pour accéder à l'écosystème</p>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+
+            <!-- CLIENT APP -->
+            <div onclick="selectRole('buyer')" class="role-card">
+                <div class="role-icon" style="background: linear-gradient(135deg, var(--vma-gold), #ccac00); color: #000;">
+                    <i class="fa fa-shopping-bag"></i>
+                </div>
+                <div class="role-info">
+                    <h3>VMA Client / Acheteur</h3>
+                    <p>Acheter, Importer & Achats Groupés</p>
+                </div>
+                <i class="fa fa-chevron-right role-chevron"></i>
+            </div>
+
+            <!-- SELLER APP -->
+            <div onclick="selectRole('supplier')" class="role-card">
+                <div class="role-icon" style="background: #1a1a1a; color: var(--vma-gold); border: 1px solid #333;">
+                    <i class="fa fa-store"></i>
+                </div>
+                <div class="role-info">
+                    <h3>VMA Seller / Fournisseur</h3>
+                    <p>Gérer vos stocks, ventes et revenus</p>
+                </div>
+                <i class="fa fa-chevron-right role-chevron"></i>
+            </div>
+
+            <!-- LOGISTICS APP -->
+            <div onclick="selectRole('logistics')" class="role-card">
+                <div class="role-icon" style="background: #1a1a1a; color: var(--vma-green); border: 1px solid #333;">
+                    <i class="fa fa-truck-fast"></i>
+                </div>
+                <div class="role-info">
+                    <h3>VMA Logistics</h3>
+                    <p>Tracking, Transit & Gestion de colis</p>
+                </div>
+                <i class="fa fa-chevron-right role-chevron"></i>
+            </div>
+
+            <!-- ADMIN APP -->
+            <div onclick="selectRole('admin')" class="role-card">
+                <div class="role-icon" style="background: #1a1a1a; color: var(--vma-blue); border: 1px solid #333;">
+                    <i class="fa fa-user-shield"></i>
+                </div>
+                <div class="role-info">
+                    <h3>VMA Administration</h3>
+                    <p>Contrôle, Validation & Statistiques</p>
+                </div>
+                <i class="fa fa-chevron-right role-chevron"></i>
+            </div>
+
+            <!-- VISITOR -->
+            <div onclick="selectRole('visitor')" class="role-card" style="margin-top: 10px; border-style: dashed; opacity: 0.8;">
+                <div class="role-icon" style="background: transparent; color: #555; border: 1px dashed #444;">
+                    <i class="fa fa-eye"></i>
+                </div>
+                <div class="role-info">
+                    <h3 style="color: var(--text-muted);">Continuer en Visiteur</h3>
+                    <p>Explorer le marketplace sans compte</p>
+                </div>
+                <i class="fa fa-chevron-right role-chevron"></i>
+            </div>
+        </div>
+
+        <div style="margin-top: 50px; opacity: 0.4;">
+            <p style="font-size: 10px; color: #fff;">VMA Global Trade © 2026 - Master Class Edition</p>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+
+    <script src="js/api.js"></script>
+    <script>
+        function selectRole(role) {
+            localStorage.setItem('vma_selected_role', role);
+
+            if (role === 'visitor') {
+                location.href = 'index.html';
+                return;
+            }
+
+            const token = localStorage.getItem('vma_token');
+            const userRole = localStorage.getItem('vma_role');
+
+            if (token && userRole === role) {
+                redirectByRole(role);
+            } else {
+                location.href = 'auth.html?target=' + role;
+            }
+        }
+
+        function redirectByRole(role) {
+            switch(role) {
+                case 'buyer': location.href = 'index.html'; break;
+                case 'supplier': location.href = 'seller_dashboard.html'; break;
+                case 'admin': location.href = 'admin_panel.html'; break;
+                case 'logistics': location.href = 'logistics_app.html'; break;
+                default: location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

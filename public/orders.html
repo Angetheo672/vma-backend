@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mes Commandes | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="height: 60px; display: flex; align-items: center; background: #111;">
+        <div class="header-top" style="width: 100%; margin-bottom: 0;">
+            <div class="logo-area">
+                <a href="profile.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-chevron-left" style="color: var(--vma-gold);"></i>
+                    <span style="font-weight: 700;">MES COMMANDES</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 70px 16px 20px;">
+        <!-- Order Card 1 -->
+        <div class="order-card-buyer">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span style="font-size: 11px; color: var(--text-muted);">08 Juil 2026</span>
+                <span class="status-chip delivered">LIVRÉ</span>
+            </div>
+            <div style="display: flex; gap: 12px; margin-bottom: 15px;">
+                <img src="images/15.jpg" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                <div style="flex: 1;">
+                    <h4 style="font-size: 13px;">iPhone 15 Pro Max Titanium</h4>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--vma-gold); margin-top: 4px;">785.000 F</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-order-alt">Facture PDF</button>
+                <button class="btn-order" onclick="location.href='tracking.html'">Suivre</button>
+            </div>
+        </div>
+
+        <!-- Order Card 2 -->
+        <div class="order-card-buyer">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span style="font-size: 11px; color: var(--text-muted);">05 Juil 2026</span>
+                <span class="status-chip shipping">EN TRANSIT</span>
+            </div>
+            <div style="display: flex; gap: 12px; margin-bottom: 15px;">
+                <img src="images/montrerolex.jpg" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                <div style="flex: 1;">
+                    <h4 style="font-size: 13px;">Rolex Submariner Gold</h4>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--vma-gold); margin-top: 4px;">12.500 F</div>
+                </div>
+            </div>
+            <button class="btn-order" style="width: 100%;" onclick="location.href='tracking.html'">Détails Tracking</button>
+        </div>
+    </main>
+
+    <style>
+        .order-card-buyer { background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 15px; }
+        .status-chip { font-size: 9px; padding: 2px 8px; border-radius: 4px; font-weight: 800; }
+        .status-chip.delivered { background: rgba(82,196,26,0.1); color: var(--vma-green); }
+        .status-chip.shipping { background: rgba(24,144,255,0.1); color: var(--vma-blue); }
+        .btn-order { background: var(--vma-gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-size: 11px; font-weight: 700; flex: 1; font-family: inherit; }
+        .btn-order-alt { background: #222; color: #fff; border: 1px solid #333; padding: 10px 15px; border-radius: 8px; font-size: 11px; font-weight: 700; flex: 1; font-family: inherit; }
+    </style>
+</body>
+</html>

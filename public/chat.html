@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VMA Chat | Direct Messaging</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="height: 60px; display: flex; align-items: center; background: #111;">
+        <div class="header-top" style="width: 100%; margin-bottom: 0;">
+            <div class="logo-area">
+                <a href="javascript:history.back()" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-chevron-left" style="color: var(--vma-gold);"></i>
+                    <img src="images/logo.jpeg" alt="Merchant" style="width: 30px; height: 30px; border-radius: 50%;">
+                    <span style="font-weight: 600; font-size: 14px;">Support VMA / Vendeur</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 70px 16px 80px; display: flex; flex-direction: column; gap: 15px;">
+        <!-- Received -->
+        <div class="chat-bubble received">
+            Bonjour ! Comment puis-je vous aider avec votre commande #VMA-102 ?
+            <span class="chat-time">10:42</span>
+        </div>
+
+        <!-- Sent -->
+        <div class="chat-bubble sent">
+            Bonjour, j'aimerais savoir si le colis a déjà quitté l'entrepôt de Guangzhou.
+            <span class="chat-time">10:45</span>
+        </div>
+
+        <!-- Received -->
+        <div class="chat-bubble received">
+            Oui, il est actuellement en cours de chargement pour le vol cargo de ce soir. Vous recevrez une notification de suivi demain matin.
+            <span class="chat-time">10:46</span>
+        </div>
+    </main>
+
+    <!-- CHAT INPUT -->
+    <div style="position: fixed; bottom: 0; width: 100%; background: #111; padding: 15px; border-top: 1px solid #222; display: flex; gap: 10px; align-items: center;">
+        <i class="fa fa-plus-circle" style="font-size: 20px; color: #444;"></i>
+        <input type="text" placeholder="Ecrivez votre message..." style="flex: 1; background: #000; border: 1px solid #333; border-radius: 20px; padding: 10px 15px; color: #fff; font-family: inherit; outline: none;">
+        <button style="background: var(--vma-gold); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fa fa-paper-plane" style="color: #000;"></i>
+        </button>
+    </div>
+
+    <style>
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+            position: relative;
+        }
+        .chat-bubble.received {
+            align-self: flex-start;
+            background: #222;
+            color: #eee;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-bubble.sent {
+            align-self: flex-end;
+            background: var(--vma-gold);
+            color: #000;
+            border-bottom-right-radius: 4px;
+            font-weight: 500;
+        }
+        .chat-time {
+            display: block;
+            font-size: 9px;
+            margin-top: 5px;
+            opacity: 0.5;
+        }
+    </style>
+</body>
+</html>

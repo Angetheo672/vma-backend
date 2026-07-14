@@ -9,21 +9,22 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 
 // MIDDLEWARE
 app.use(express.json());
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'x-auth-token']
-}));
+app.use(cors());
 app.use(helmet({
     crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false, // Nécessaire pour charger des ressources externes en mode WebApp
 }));
 app.use(morgan('dev'));
+
+// SERVIR LES FICHIERS STATIQUES (La Méthode B)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Logger for debugging 404s
 app.use((req, res, next) => {

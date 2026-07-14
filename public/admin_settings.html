@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Paramètres VMA | Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="background: var(--vma-blue);">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: #fff;"></i>
+            <span class="brand-name" style="color: #fff;">PARAMÈTRES SYSTÈME</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div style="background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222;">
+            <div class="setting-row">
+                <label>Taux de change (CNY/XAF)</label>
+                <input type="number" value="95">
+            </div>
+            <div class="setting-row">
+                <label>Commission d'agence (%)</label>
+                <input type="number" value="5">
+            </div>
+            <div class="setting-row">
+                <label>Prix Fret Avion (Kg/XAF)</label>
+                <input type="number" value="9500">
+            </div>
+            <div class="setting-row">
+                <label>Mode Maintenance</label>
+                <input type="checkbox">
+            </div>
+
+            <button class="vma-btn-primary" style="background: var(--vma-blue); margin-top: 20px; width: 100%; border: none;">ENREGISTRER LES CONFIGURATIONS</button>
+        </div>
+    </main>
+
+    <style>
+        .setting-row { margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 15px; }
+        .setting-row label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        .setting-row input[type="number"] { width: 100%; background: #000; border: 1px solid #333; padding: 12px; border-radius: 10px; color: #fff; }
+    </style>
+</body>
+</html>

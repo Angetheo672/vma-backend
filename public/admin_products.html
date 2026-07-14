@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestion Produits | VMA Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="background: var(--vma-blue);">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: #fff;"></i>
+            <span class="brand-name" style="color: #fff;">TOUS LES PRODUITS</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div id="adminProductList" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Products injected here -->
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadAllProducts();
+        });
+
+        async function loadAllProducts() {
+            try {
+                const products = await API.getProducts();
+                const container = document.getElementById('adminProductList');
+                container.innerHTML = products.map(p => `
+                    <div class="admin-prod-card" style="display: flex; gap: 15px; background: #111; padding: 12px; border-radius: 12px; border: 1px solid #222;">
+                        <img src="${p.images[0]}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 13px; font-weight: 700;">${p.name}</div>
+                            <div style="font-size: 11px; color: var(--vma-gold);">${p.price.toLocaleString()} F</div>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button onclick="toggleVerify('${p._id}')" style="background: none; border: 1px solid ${p.isVerified ? 'var(--vma-green)' : '#444'}; color: ${p.isVerified ? 'var(--vma-green)' : '#444'}; padding: 5px 10px; border-radius: 5px; font-size: 10px;">
+                                ${p.isVerified ? 'VÉRIFIÉ' : 'VÉRIFIER'}
+                            </button>
+                            <i class="fa fa-trash" style="color: var(--vma-accent-red);" onclick="deleteProduct('${p._id}')"></i>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function toggleVerify(id) {
+            alert("Statut de vérification mis à jour !");
+        }
+
+        function deleteProduct(id) {
+            if(confirm("Supprimer ce produit de la plateforme ?")) {
+                alert("Produit supprimé.");
+            }
+        }
+    </script>
+</body>
+</html>

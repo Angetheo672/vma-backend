@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mon Profil | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header" style="height: 180px; background: linear-gradient(135deg, #000, #1a1a1a); border: none;">
+            <div class="header-top">
+                <span class="brand-name">MON COMPTE</span>
+                <a href="settings.html" style="color: inherit;"><i class="fa fa-gear" style="color: var(--vma-gold);"></i></a>
+            </div>
+
+            <div id="userInfo" style="display: none; align-items: center; gap: 20px; margin-top: 20px;">
+                <div style="width: 70px; height: 70px; background: var(--vma-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; color: #000; box-shadow: 0 0 15px rgba(255,215,0,0.3);">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div>
+                    <h2 id="userName" style="font-size: 18px; font-weight: 700;">Visionnaire VMA</h2>
+                    <span id="userRole" style="font-size: 12px; color: var(--vma-gold); background: rgba(255,215,0,0.1); padding: 2px 8px; border-radius: 4px;">Membre Elite</span>
+                </div>
+            </div>
+
+            <div id="authPrompt" style="margin-top: 30px; text-align: center; display: none;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Connectez-vous pour accéder à vos commandes</p>
+                <button onclick="location.href='auth.html'" class="vma-btn-primary" style="padding: 10px 40px;">SE CONNECTER</button>
+            </div>
+        </header>
+
+        <main class="scroll-container" style="padding-top: 180px; background: var(--vma-black);">
+
+            <!-- STATS BAR -->
+            <div id="profileStats" style="display: none; grid-template-columns: repeat(3, 1fr); background: #1a1a1a; margin: -25px 16px 20px; border-radius: 15px; padding: 15px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 1px solid #222;">
+                <div onclick="location.href='orders.html'">
+                    <div id="orderCount" style="font-weight: 800; color: var(--vma-gold);">0</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">Commandes</div>
+                </div>
+                <div style="border-left: 1px solid #333; border-right: 1px solid #333;">
+                    <div id="pendingCount" style="font-weight: 800; color: var(--vma-gold);">0</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">En cours</div>
+                </div>
+                <div>
+                    <div style="font-weight: 800; color: var(--vma-gold);">0</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">Points VMA</div>
+                </div>
+            </div>
+
+            <!-- MENU SECTIONS -->
+            <div class="p-16">
+                <h4 id="serviceTitle" style="font-size: 14px; margin-bottom: 15px; color: var(--text-muted); display: none;">MES SERVICES</h4>
+
+                <div id="serviceGrid" style="display: none; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                    <div class="menu-card" onclick="location.href='import.html'">
+                        <i class="fa fa-ship"></i>
+                        <span>Mes Imports Chine</span>
+                    </div>
+                    <div class="menu-card" onclick="location.href='groupbuy.html'">
+                        <i class="fa fa-users"></i>
+                        <span>Mes Achats Groupés</span>
+                    </div>
+                    <div class="menu-card" onclick="location.href='rewards.html'">
+                        <i class="fa fa-ticket"></i>
+                        <span>Coupons & Cadeaux</span>
+                    </div>
+                    <div id="sellerDashboardBtn" class="menu-card" onclick="location.href='seller_dashboard.html'" style="display: none; border-color: var(--vma-gold);">
+                        <i class="fa fa-shop"></i>
+                        <span>Dashboard Vendeur</span>
+                    </div>
+                    <div class="menu-card" onclick="alert('Programme Ambassadeur VMA : Gagnez 5% sur chaque vente !')">
+                        <i class="fa fa-hand-holding-dollar"></i>
+                        <span>Affiliation</span>
+                    </div>
+                </div>
+
+                <h4 style="font-size: 14px; margin: 25px 0 15px; color: var(--text-muted);">PARAMÈTRES</h4>
+                <div class="list-item" onclick="location.href='contact.html'">
+                    <i class="fa fa-circle-question"></i>
+                    <span>Centre d'Aide intégré</span>
+                    <i class="fa fa-chevron-right" style="margin-left: auto; font-size: 12px; color: #444;"></i>
+                </div>
+                <div class="list-item">
+                    <i class="fa fa-shield-halved"></i>
+                    <span>Sécurité du compte</span>
+                    <i class="fa fa-chevron-right" style="margin-left: auto; font-size: 12px; color: #444;"></i>
+                </div>
+
+                <div id="logoutBtn" class="list-item" onclick="logout()" style="display: none; color: var(--vma-accent-red);">
+                    <i class="fa fa-right-from-bracket" style="color: var(--vma-accent-red);"></i>
+                    <span>Se déconnecter</span>
+                </div>
+
+                <button onclick="location.href='gateway.html'" style="width: 100%; padding: 15px; margin-top: 30px; background: none; border: 1px solid #333; color: var(--vma-gold); border-radius: 12px; font-weight: 600; font-family: inherit;">
+                    RETOUR AU SÉLECTEUR DE RÔLE
+                </button>
+            </div>
+        </main>
+
+        <style>
+            .menu-card {
+                background: #1a1a1a;
+                padding: 20px 15px;
+                border-radius: 15px;
+                text-align: center;
+                border: 1px solid #222;
+            }
+            .menu-card i {
+                font-size: 24px;
+                color: var(--vma-gold);
+                margin-bottom: 10px;
+                display: block;
+            }
+            .menu-card span {
+                font-size: 12px;
+                font-weight: 500;
+            }
+            .list-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 15px 0;
+                border-bottom: 1px solid #222;
+            }
+            .list-item i:first-child {
+                color: var(--vma-gold);
+                font-size: 18px;
+            }
+        </style>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fa fa-home"></i>
+                <span>Accueil</span>
+            </a>
+            <a href="marketplace.html" class="nav-item">
+                <i class="fa fa-compass"></i>
+                <span>Explorer</span>
+            </a>
+            <a href="cart.html" class="nav-item">
+                <i class="fa fa-shopping-bag"></i>
+                <span>Panier</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fa fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('vma_token');
+            if (token) {
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('profileStats').style.display = 'grid';
+                document.getElementById('serviceTitle').style.display = 'block';
+                document.getElementById('serviceGrid').style.display = 'grid';
+                document.getElementById('logoutBtn').style.display = 'flex';
+
+                // Check role
+                const role = localStorage.getItem('vma_role');
+                if (role === 'supplier' || role === 'admin') {
+                    document.getElementById('sellerDashboardBtn').style.display = 'block';
+                }
+
+                await loadUserData();
+            } else {
+                document.getElementById('authPrompt').style.display = 'block';
+            }
+        });
+
+        async function loadUserData() {
+            try {
+                // Fetch real orders count
+                const orders = await API.getOrders();
+                document.getElementById('orderCount').innerText = orders.length;
+                document.getElementById('pendingCount').innerText = orders.filter(o => o.orderStatus === 'processing').length;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('vma_token');
+            localStorage.removeItem('vma_role');
+            location.reload();
+        }
+    </script>
+</body>
+</html>

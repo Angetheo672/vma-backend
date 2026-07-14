@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VMA Seller | Dashboard Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="height: 70px; display: flex; align-items: center; background: #111; border-bottom: 1px solid #222;">
+        <div class="header-top" style="width: 100%; margin-bottom: 0; padding: 0 15px;">
+            <div class="logo-area">
+                <a href="gateway.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-chevron-left" style="color: var(--vma-gold);"></i>
+                    <span class="brand-name">VMA SELLER</span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <i class="fa-regular fa-bell"></i>
+                <div style="width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--vma-gold); background: #222; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                    <i class="fa fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <!-- REVENUE OVERVIEW -->
+        <div style="background: linear-gradient(135deg, #1a1a1a, #080808); padding: 25px; border-radius: 25px; border: 1px solid #222; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Solde VMA Pay</span>
+                    <div style="font-size: 32px; font-weight: 800; color: var(--vma-gold); margin: 5px 0;">2.450.000 F</div>
+                </div>
+                <div style="background: rgba(82,196,26,0.1); color: var(--vma-green); padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 700;">
+                    +15.4% <i class="fa fa-arrow-up"></i>
+                </div>
+            </div>
+
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">Prochain virement : 12 Juil. 2026</p>
+
+            <!-- Mini Chart -->
+            <div style="display: flex; align-items: flex-end; gap: 6px; height: 50px; margin-top: 25px;">
+                <div style="flex: 1; background: #222; height: 30%; border-radius: 3px;"></div>
+                <div style="flex: 1; background: #222; height: 50%; border-radius: 3px;"></div>
+                <div style="flex: 1; background: var(--vma-gold); height: 80%; border-radius: 3px; opacity: 0.8;"></div>
+                <div style="flex: 1; background: #222; height: 40%; border-radius: 3px;"></div>
+                <div style="flex: 1; background: var(--vma-gold); height: 100%; border-radius: 3px;"></div>
+                <div style="flex: 1; background: #222; height: 60%; border-radius: 3px;"></div>
+                <div style="flex: 1; background: #222; height: 45%; border-radius: 3px;"></div>
+            </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 35px;">
+            <div class="seller-action-card" onclick="location.href='add_product.html'">
+                <div class="action-icon-circle" style="background: rgba(255,215,0,0.1); color: var(--vma-gold);">
+                    <i class="fa fa-plus"></i>
+                </div>
+                <span>Nouveau Produit</span>
+            </div>
+            <div class="seller-action-card" onclick="location.href='seller_import.html'">
+                <div class="action-icon-circle" style="background: rgba(24,144,255,0.1); color: var(--vma-blue);">
+                    <i class="fa fa-cloud-arrow-up"></i>
+                </div>
+                <span>Import 1688</span>
+            </div>
+        </div>
+
+        <!-- PRODUCT MANAGEMENT -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="font-size: 16px; font-weight: 700;">Stock Actif</h3>
+            <span style="font-size: 12px; color: var(--vma-gold);" onclick="location.href='seller_products.html'">Gérer tout</span>
+        </div>
+
+        <div id="sellerProductList" style="background: #111; border-radius: 20px; border: 1px solid #222; overflow: hidden; margin-bottom: 35px;">
+            <div style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 13px;">Chargement du stock...</div>
+        </div>
+
+        <!-- ORDERS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="font-size: 16px; font-weight: 700;">Commandes Récentes</h3>
+            <span style="font-size: 12px; color: var(--text-muted);">Voir l'historique</span>
+        </div>
+
+        <div id="sellerOrderList" style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 50px;">
+            <!-- Dynamic -->
+        </div>
+    </main>
+
+    <style>
+        .seller-action-card {
+            background: #111;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #222;
+            transition: all 0.3s;
+        }
+        .seller-action-card:active { transform: scale(0.95); border-color: var(--vma-gold); }
+        .action-icon-circle {
+            width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+        }
+        .seller-action-card span { font-size: 12px; font-weight: 600; color: #fff; }
+
+        .order-item {
+            background: #111;
+            padding: 18px;
+            border-radius: 20px;
+            border: 1px solid #222;
+        }
+        .status-badge {
+            font-size: 10px; padding: 3px 10px; border-radius: 6px; text-transform: uppercase; font-weight: 800;
+        }
+        .status-paid { background: rgba(82,196,26,0.1); color: var(--vma-green); }
+        .status-pending { background: rgba(255,215,0,0.1); color: var(--vma-gold); }
+
+        .seller-prod-row {
+            display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #1a1a1a;
+        }
+        .seller-prod-row:last-child { border-bottom: none; }
+        .seller-prod-row img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; background: #222; }
+    </style>
+
+    <script src="js/api.js"></script>
+    <script src="js/seller.js"></script>
+</body>
+</html>

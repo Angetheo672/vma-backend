@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VMA Admin | Control Center</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="background: var(--vma-blue);">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="location.href='gateway.html'" style="color: #fff;"></i>
+            <span class="brand-name" style="color: #fff;">VMA ADMIN PANEL</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <!-- STATS GRID -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px;">
+            <div class="stat-box">
+                <span id="totalRevenue">0 F</span>
+                <label>Revenu Total</label>
+            </div>
+            <div class="stat-box">
+                <span id="totalOrders">0</span>
+                <label>Commandes</label>
+            </div>
+            <div class="stat-box">
+                <span id="totalUsers">0</span>
+                <label>Utilisateurs</label>
+            </div>
+            <div class="stat-box">
+                <span id="pendingSellers">0</span>
+                <label>Vendeurs à valider</label>
+            </div>
+        </div>
+
+        <!-- ADMIN ACTIONS -->
+        <h3 style="font-size: 14px; margin-bottom: 15px; color: var(--text-muted);">GESTION RAPIDE</h3>
+        <div class="admin-menu">
+            <div class="admin-item" onclick="location.href='admin_users.html'">
+                <i class="fa fa-users"></i>
+                <span>Utilisateurs & Vendeurs</span>
+            </div>
+            <div class="admin-item" onclick="location.href='admin_products.html'">
+                <i class="fa fa-box-open"></i>
+                <span>Tous les Produits</span>
+            </div>
+            <div class="admin-item" onclick="location.href='admin_orders.html'">
+                <i class="fa fa-truck-ramp-box"></i>
+                <span>Toutes les Commandes</span>
+            </div>
+            <div class="admin-item" onclick="location.href='admin_settings.html'">
+                <i class="fa fa-gears"></i>
+                <span>Paramètres Système</span>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .stat-box { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; text-align: center; }
+        .stat-box span { display: block; font-size: 18px; font-weight: 800; color: var(--vma-blue); margin-bottom: 5px; }
+        .stat-box label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .admin-menu { display: flex; flex-direction: column; gap: 10px; }
+        .admin-item { background: #1a1a1a; padding: 18px; border-radius: 15px; display: flex; align-items: center; gap: 15px; border: 1px solid #222; }
+        .admin-item i { font-size: 20px; color: var(--vma-blue); width: 30px; text-align: center; }
+        .admin-item span { font-size: 14px; font-weight: 500; }
+    </style>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadAdminStats();
+        });
+
+        async function loadAdminStats() {
+            try {
+                const stats = await API.request('/admin/stats');
+                document.getElementById('totalRevenue').innerText = formatPrice(stats.totalRevenue) + ' F';
+                document.getElementById('totalOrders').innerText = stats.totalOrders;
+                document.getElementById('totalUsers').innerText = stats.totalUsers;
+                document.getElementById('pendingSellers').innerText = stats.totalSuppliers; // For demo
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR').format(price);
+        }
+    </script>
+</body>
+</html>

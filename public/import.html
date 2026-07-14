@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Importation Smart | VMA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold);"></i>
+            <span class="brand-name">IMPORTATION DIRECTE</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="width: 80px; height: 80px; background: rgba(255,215,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border: 2px solid var(--vma-gold);">
+                <i class="fa fa-link" style="font-size: 30px; color: var(--vma-gold);"></i>
+            </div>
+            <h2 style="font-size: 18px; font-weight: 800;">Convertisseur de Lien AI</h2>
+            <p style="font-size: 12px; color: var(--text-muted);">Collez un lien 1688, Alibaba ou Taobao pour importer.</p>
+        </div>
+
+        <div style="background: #111; padding: 20px; border-radius: 20px; border: 1px solid #222;">
+            <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 10px;">Lien du produit (Chine)</label>
+            <textarea id="importLink" placeholder="https://detail.1688.com/offer/..." style="width: 100%; height: 100px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; padding: 12px; font-family: inherit; resize: none; outline: none;"></textarea>
+
+            <button class="vma-btn-primary" style="width: 100%; margin-top: 20px;" onclick="convertLink()">
+                ANALYSER & IMPORTER
+            </button>
+        </div>
+
+        <div id="importResult" style="display: none; margin-top: 30px; animation: slideUp 0.4s ease-out;">
+            <div style="background: #1a1a1a; padding: 20px; border-radius: 20px; border: 1px solid var(--vma-gold);">
+                <div style="display: flex; gap: 15px;">
+                    <img id="resImg" src="https://via.placeholder.com/100" style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover;">
+                    <div style="flex: 1;">
+                        <h3 id="resName" style="font-size: 14px; font-weight: 700;">Produit détecté...</h3>
+                        <div id="resPrice" style="color: var(--vma-gold); font-weight: 800; font-size: 18px; margin-top: 5px;">0 F</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #222;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px;">
+                        <span>Délai estimé:</span>
+                        <span style="color: var(--vma-green);">12-15 Jours</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                        <span>Frais d'agence:</span>
+                        <span>Gratuit (Promo)</span>
+                    </div>
+                </div>
+
+                <button class="vma-btn-primary" style="width: 100%; margin-top: 20px;" onclick="addToCartConverted()">
+                    AJOUTER AU PANIER VMA
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        async function convertLink() {
+            const link = document.getElementById('importLink').value;
+            if (!link.includes('1688') && !link.includes('alibaba') && !link.includes('taobao')) {
+                alert("Veuillez coller un lien valide (1688, Alibaba ou Taobao)");
+                return;
+            }
+
+            try {
+                showToast("Analyse AI en cours...");
+                const data = await API.analyzeLink(link);
+
+                document.getElementById('importResult').style.display = 'block';
+                document.getElementById('resName').innerText = data.name;
+                document.getElementById('resPrice').innerText = formatPrice(data.price) + " F";
+                document.getElementById('resImg').src = data.image;
+            } catch (err) {
+                alert("Erreur d'analyse: " + err.message);
+            }
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR').format(price);
+        }
+
+        function showToast(msg) {
+            // Simplified for this page
+            const t = document.createElement('div');
+            t.style.cssText = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--vma-gold); color:#000; padding:10px 20px; border-radius:20px; z-index:9999; font-weight:700;";
+            t.innerText = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2000);
+        }
+
+        function addToCartConverted() {
+            alert("Produit importé ajouté au panier !");
+            location.href = 'cart.html';
+        }
+    </script>
+</body>
+</html>

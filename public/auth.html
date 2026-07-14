@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Connexion & Inscription | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body style="background: #000; color: #fff; min-height: 100vh; margin: 0; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0; display: flex; align-items: center; justify-content: center;">
+
+    <div class="auth-container">
+        <!-- Brand Header -->
+        <div style="text-align: center; margin-bottom: 35px; animation: slideDown 0.6s ease-out;">
+            <img src="images/logo.jpeg" style="width: 85px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 0 30px rgba(255,215,0,0.2);">
+            <h1 style="font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -1px;">VISION MARKET AFRICA</h1>
+            <p id="authSubtitle" style="color: var(--vma-gold); font-size: 11px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; margin-top: 5px;">Accès Elite Gateway</p>
+        </div>
+
+        <div class="auth-card">
+            <!-- LOGIN SECTION -->
+            <div id="loginSection">
+                <h2 style="font-size: 20px; margin-bottom: 25px; font-weight: 700;">Connexion</h2>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Adresse Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" name="password" placeholder="Mot de passe" required>
+                    </div>
+
+                    <div style="text-align: right; margin-bottom: 20px;">
+                        <a href="forgot-password.html" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">Mot de passe oublié ?</a>
+                    </div>
+
+                    <button type="submit" class="vma-btn-primary" style="width: 100%;">SE CONNECTER</button>
+                </form>
+
+                <p style="text-align: center; font-size: 13px; margin-top: 25px; color: var(--text-muted);">
+                    Nouveau sur VMA ? <span onclick="toggleAuth()" style="color: var(--vma-gold); font-weight: 700; cursor: pointer;">Créer un compte</span>
+                </p>
+            </div>
+
+            <!-- REGISTER SECTION -->
+            <div id="registerSection" style="display: none;">
+                <h2 style="font-size: 20px; margin-bottom: 25px; font-weight: 700;">Inscription</h2>
+                <form id="registerForm">
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-group" style="flex: 1;">
+                            <i class="fa fa-user"></i>
+                            <input type="text" name="firstName" placeholder="Prénom" required>
+                        </div>
+                        <div class="input-group" style="flex: 1;">
+                            <input type="text" name="lastName" placeholder="Nom" required style="padding-left: 20px;">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa fa-phone"></i>
+                        <input type="tel" name="phone" placeholder="Téléphone" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" name="password" placeholder="Mot de passe" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa fa-id-badge"></i>
+                        <select name="role" id="roleSelect" required>
+                            <option value="buyer">Acheteur (Particulier)</option>
+                            <option value="supplier">Fournisseur (Vendeur)</option>
+                            <option value="logistics">Agent Logistique</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="vma-btn-primary" style="width: 100%; margin-top: 10px;">CRÉER UN COMPTE</button>
+                </form>
+
+                <p style="text-align: center; font-size: 13px; margin-top: 25px; color: var(--text-muted);">
+                    Déjà inscrit ? <span onclick="toggleAuth()" style="color: var(--vma-gold); font-weight: 700; cursor: pointer;">Se connecter</span>
+                </p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; opacity: 0.5;">
+            <p style="font-size: 10px;">En continuant, vous acceptez nos <br> <a href="terms.html" style="color: #fff;">Conditions Générales</a></p>
+        </div>
+    </div>
+
+    <style>
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+
+    <script src="js/api.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetRole = urlParams.get('target');
+
+        // Auto-select role if target is specified
+        if (targetRole) {
+            const select = document.getElementById('roleSelect');
+            if(select) select.value = targetRole;
+        }
+
+        function toggleAuth() {
+            const login = document.getElementById('loginSection');
+            const register = document.getElementById('registerSection');
+            const subtitle = document.getElementById('authSubtitle');
+
+            if (login.style.display === 'none') {
+                login.style.display = 'block';
+                register.style.display = 'none';
+                subtitle.innerText = "Accès Elite Gateway";
+            } else {
+                login.style.display = 'none';
+                register.style.display = 'block';
+                subtitle.innerText = "Rejoindre l'écosystème";
+            }
+        }
+
+        document.getElementById('loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = e.target.email.value;
+            const password = e.target.password.value;
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+
+            try {
+                btn.innerText = "CONNEXION EN COURS...";
+                btn.disabled = true;
+
+                const data = await API.login({ email, password });
+                localStorage.setItem('vma_token', data.token);
+                localStorage.setItem('vma_role', data.role);
+
+                if (targetRole && data.role !== targetRole) {
+                    if(window.Android) Android.showToast(`Note: Rôle détecté: ${data.role}`);
+                }
+
+                redirectByRole(data.role);
+            } catch (err) {
+                btn.innerText = originalText;
+                btn.disabled = false;
+                if(window.Android) Android.showToast(err.message);
+                else alert(err.message);
+            }
+        };
+
+        function redirectByRole(role) {
+            switch(role) {
+                case 'buyer': location.href = 'index.html'; break;
+                case 'supplier': location.href = 'seller_dashboard.html'; break;
+                case 'admin': location.href = 'admin_panel.html'; break;
+                case 'logistics': location.href = 'logistics_app.html'; break;
+                default: location.href = 'index.html';
+            }
+        }
+
+        document.getElementById('registerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            const formData = new FormData(e.target);
+            const userData = Object.fromEntries(formData.entries());
+
+            try {
+                btn.innerText = "CRÉATION DU COMPTE...";
+                btn.disabled = true;
+
+                const data = await API.register(userData);
+                localStorage.setItem('vma_token', data.token);
+                localStorage.setItem('vma_role', userData.role);
+
+                if(window.Android) Android.showToast("Compte créé avec succès !");
+                redirectByRole(userData.role);
+            } catch (err) {
+                btn.innerText = originalText;
+                btn.disabled = false;
+                if(window.Android) Android.showToast(err.message);
+                else alert(err.message);
+            }
+        };
+    </script>
+</body>
+</html>

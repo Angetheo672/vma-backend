@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Devenir Vendeur | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold);"></i>
+            <span class="brand-name">DEMANDE VENDEUR</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div style="background: #111; padding: 25px; border-radius: 20px; border: 1px solid #222;">
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">
+                Rejoignez le réseau VMA. Veuillez fournir les informations de votre entreprise pour validation.
+            </p>
+
+            <form id="sellerRegisterForm">
+                <div class="form-group">
+                    <label>Nom de l'entreprise</label>
+                    <input type="text" name="companyName" placeholder="Ex: Boutique Elite Douala" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Adresse Physique</label>
+                    <input type="text" name="address" placeholder="Rue, Quartier, Ville" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Type de produits</label>
+                    <select name="category">
+                        <option value="electronics">Électronique</option>
+                        <option value="fashion">Mode & Beauté</option>
+                        <option value="wholesale">Gros / Sourcing</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Documents (Registre Commerce / CNI)</label>
+                    <div style="background: #000; border: 1px dashed #333; padding: 20px; border-radius: 12px; text-align: center;" onclick="document.getElementById('docInput').click()">
+                        <i class="fa fa-cloud-arrow-up" style="font-size: 24px; color: var(--vma-gold); margin-bottom: 10px;"></i>
+                        <div style="font-size: 11px;">Importer les documents</div>
+                        <input type="file" id="docInput" style="display: none;" multiple>
+                    </div>
+                </div>
+
+                <button type="submit" class="vma-btn-primary" style="width: 100%; margin-top: 20px;">ENVOYER LA DEMANDE</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('sellerRegisterForm').onsubmit = async (e) => {
+            e.preventDefault();
+            // Simulate submission
+            alert("Votre demande a été envoyée ! Un administrateur VMA vous contactera après vérification de vos documents.");
+            localStorage.setItem('vma_seller_registered', 'true'); // For demo purposes
+            location.href = 'seller_dashboard.html';
+        };
+    </script>
+</body>
+</html>

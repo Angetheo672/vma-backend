@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Détails Commande | VMA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold);"></i>
+            <span class="brand-name">DÉTAILS COMMANDE</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div id="orderDetails" style="background: #111; padding: 25px; border-radius: 20px; border: 1px solid #222;">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div id="orderId" style="font-size: 18px; font-weight: 800; color: var(--vma-gold);">#------</div>
+                <div id="orderStatus" style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Chargement...</div>
+            </div>
+
+            <div id="orderItems" style="border-top: 1px solid #222; padding-top: 20px;">
+                <!-- Items list -->
+            </div>
+
+            <div style="margin-top: 25px; border-top: 1px solid #222; padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Sous-total:</span>
+                    <span id="subTotal">0 F</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: var(--vma-gold);">
+                    <span>TOTAL:</span>
+                    <span id="orderTotal">0 F</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('id');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!orderId) return history.back();
+            await loadOrder();
+        });
+
+        async function loadOrder() {
+            try {
+                const order = await API.request(`/orders/${orderId}`);
+                document.getElementById('orderId').innerText = '#' + order._id.toString().slice(-6).toUpperCase();
+                document.getElementById('orderStatus').innerText = order.orderStatus;
+
+                const itemsContainer = document.getElementById('orderItems');
+                itemsContainer.innerHTML = order.items.map(item => `
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 13px; font-weight: 700;">${item.product ? item.product.name : 'Produit supprimé'}</div>
+                            <div style="font-size: 11px; color: var(--text-muted);">Quantité: ${item.quantity}</div>
+                        </div>
+                        <div style="font-weight: 700;">${(item.price * item.quantity).toLocaleString()} F</div>
+                    </div>
+                `).join('');
+
+                document.getElementById('subTotal').innerText = order.totalAmount.toLocaleString() + ' F';
+                document.getElementById('orderTotal').innerText = order.totalAmount.toLocaleString() + ' F';
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestion Commandes | VMA Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="background: var(--vma-blue);">
+        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px; height: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: #fff;"></i>
+            <span class="brand-name" style="color: #fff;">TOUTES LES COMMANDES</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div id="adminOrderList" style="display: flex; flex-direction: column; gap: 15px;">
+            <!-- Orders injected here -->
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadAllOrders();
+        });
+
+        async function loadAllOrders() {
+            try {
+                const orders = await API.getOrders();
+                const container = document.getElementById('adminOrderList');
+                container.innerHTML = orders.map(o => `
+                    <div style="background: #111; padding: 15px; border-radius: 15px; border: 1px solid #222;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-size: 11px; font-weight: 800; color: var(--vma-blue);">#${o._id.toString().slice(-6).toUpperCase()}</span>
+                            <span style="font-size: 10px; background: rgba(255,215,0,0.1); color: var(--vma-gold); padding: 2px 8px; border-radius: 4px;">${o.orderStatus}</span>
+                        </div>
+                        <div style="font-size: 13px; margin-bottom: 5px;">Client: ${o.customer.firstName} ${o.customer.lastName}</div>
+                        <div style="font-size: 14px; font-weight: 800; color: #fff;">${o.totalAmount.toLocaleString()} F</div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button onclick="updateStatus('${o._id}', 'shipped')" style="flex: 1; background: #222; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 8px; font-size: 11px;">EXPÉDIER</button>
+                            <button onclick="updateStatus('${o._id}', 'delivered')" style="flex: 1; background: var(--vma-green); border: none; color: #fff; padding: 8px; border-radius: 8px; font-size: 11px;">LIVRER</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function updateStatus(id, status) {
+            alert(`Commande mise à jour en statut : ${status}`);
+        }
+    </script>
+</body>
+</html>

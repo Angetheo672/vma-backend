@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ajouter un Produit | VMA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell">
+    <header class="app-header" style="height: 60px; display: flex; align-items: center; background: #111;">
+        <div class="logo-area" style="padding-left: 15px;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold); margin-right: 15px;"></i>
+            <span class="brand-name">NOUVEAU PRODUIT</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <form id="addProductForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Nom du produit</label>
+                <input type="text" name="name" placeholder="Ex: iPhone 15 Pro Max" required>
+            </div>
+
+            <div class="form-group">
+                <label>Catégorie</label>
+                <select name="category" required>
+                    <option value="Électronique">Électronique</option>
+                    <option value="Mode">Mode</option>
+                    <option value="Beauté">Beauté</option>
+                    <option value="Maison">Maison</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Prix (XAF)</label>
+                <input type="number" name="price" placeholder="785000" required>
+            </div>
+
+            <div class="form-group">
+                <label>Stock disponible</label>
+                <input type="number" name="stock" placeholder="10" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="4" placeholder="Décrivez votre produit..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Images (Max 5)</label>
+                <div class="image-upload-grid" id="imagePreview">
+                    <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                        <i class="fa fa-camera"></i>
+                        <input type="file" id="fileInput" name="images" multiple accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="vma-btn-primary" style="margin-top: 30px; width: 100%;">PUBLIER LE PRODUIT</button>
+        </form>
+    </main>
+
+    <style>
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #222; border-radius: 10px; color: #fff; font-family: inherit;
+        }
+        .image-upload-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .upload-box {
+            aspect-ratio: 1; background: #1a1a1a; border: 2px dashed #333; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #555;
+        }
+        .preview-img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    </style>
+
+    <script src="js/api.js"></script>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('imagePreview');
+
+        fileInput.onchange = () => {
+            const files = Array.from(fileInput.files);
+            // Clear previous previews except the upload button
+            const uploadBtn = preview.querySelector('.upload-box[onclick]');
+            preview.innerHTML = '';
+            preview.appendChild(uploadBtn);
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.className = 'upload-box';
+                    div.style.border = 'none';
+                    div.innerHTML = `<img src="${e.target.result}" class="preview-img">`;
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        document.getElementById('addProductForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const submitBtn = e.target.querySelector('button');
+            const originalText = submitBtn.innerText;
+
+            try {
+                submitBtn.innerText = "PUBLICATION EN COURS...";
+                submitBtn.disabled = true;
+
+                const token = localStorage.getItem('vma_token');
+
+                // Construct URL manually as API.request handles JSON, here we need Multipart
+                const response = await fetch(`${API_BASE_URL}/products`, {
+                    method: 'POST',
+                    headers: { 'x-auth-token': token },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    if(window.Android) Android.showToast("Produit publié avec succès !");
+                    location.href = 'seller_dashboard.html';
+                } else {
+                    const data = await response.json();
+                    alert('Erreur: ' + data.msg);
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Erreur lors de la publication');
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>

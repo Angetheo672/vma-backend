@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Recherche | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header" style="height: 70px;">
+        <div style="padding: 10px 15px; display: flex; gap: 10px; align-items: center; width: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()"></i>
+            <div class="search-container" style="flex: 1; margin: 0;">
+                <i class="fa fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Que recherchez-vous ?" autofocus>
+            </div>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <!-- SUGGESTIONS -->
+        <div id="suggestions" style="margin-bottom: 30px;">
+            <h4 style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">RECHERCHES POPULAIRES</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <span class="tag" onclick="searchFor('iPhone 15')">iPhone 15</span>
+                <span class="tag" onclick="searchFor('Montre')">Montre Luxe</span>
+                <span class="tag" onclick="searchFor('1688')">Sourcing 1688</span>
+                <span class="tag" onclick="searchFor('Baskets')">Baskets</span>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="searchResults" class="main-grid">
+            <!-- Products injected here -->
+        </div>
+    </main>
+
+    <style>
+        .tag { background: #111; padding: 6px 15px; border-radius: 20px; border: 1px solid #222; font-size: 11px; color: var(--vma-gold); }
+    </style>
+
+    <script src="js/api.js"></script>
+    <script>
+        const input = document.getElementById('searchInput');
+        input.oninput = async (e) => {
+            const query = e.target.value;
+            if (query.length > 2) {
+                await performSearch(query);
+            }
+        };
+
+        async function searchFor(val) {
+            input.value = val;
+            await performSearch(val);
+        }
+
+        async function performSearch(query) {
+            try {
+                // 1. Search Local Products
+                const localProducts = await API.getProducts();
+                let results = localProducts.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+
+                // 2. Innovation: If no local results, fetch from Global Chain (Alibaba/1688)
+                if (results.length === 0) {
+                    const globalData = await API.analyzeLink(query);
+                    results = Array.isArray(globalData) ? globalData : [globalData];
+                }
+
+                const grid = document.getElementById('searchResults');
+                grid.innerHTML = results.map(p => `
+                    <div class="modern-card" onclick="location.href='product.html?id=${p._id || 'global'}'">
+                        <div class="card-image-wrap">
+                            <img src="${(p.images && p.images[0]) || p.image}" alt="${p.name}">
+                        </div>
+                        <div class="card-body">
+                            <h3 class="product-name">${p.name}</h3>
+                            <div class="price-row">
+                                <span class="current-price">${formatPrice(p.price)} F</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('suggestions').style.display = results.length > 0 ? 'none' : 'block';
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR').format(price);
+        }
+    </script>
+</body>
+</html>

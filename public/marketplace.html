@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Marketplace | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header">
+        <div class="search-container" style="margin-top: 10px;">
+            <i class="fa fa-search"></i>
+            <input type="text" placeholder="Rechercher des produits certifiés..." id="marketplaceSearch">
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding-top: 80px;">
+        <!-- CATEGORIES HORIZONTAL -->
+        <div class="categories-tabs">
+            <div class="tab active">Tout</div>
+            <div class="tab">Électronique</div>
+            <div class="tab">Mode</div>
+            <div class="tab">Sourcing 1688</div>
+            <div class="tab">Gros</div>
+        </div>
+
+        <div class="p-16">
+            <div class="main-grid" id="marketplaceFeed">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .categories-tabs {
+            display: flex; gap: 10px; overflow-x: auto; padding: 10px 16px; scrollbar-width: none;
+        }
+        .categories-tabs::-webkit-scrollbar { display: none; }
+        .tab {
+            white-space: nowrap; padding: 8px 18px; background: #111; border: 1px solid #222; border-radius: 20px; font-size: 12px; font-weight: 500;
+        }
+        .tab.active { background: var(--vma-gold); color: #000; border-color: var(--vma-gold); }
+    </style>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fa fa-home"></i>
+            <span>Accueil</span>
+        </a>
+        <a href="marketplace.html" class="nav-item active">
+            <i class="fa fa-compass"></i>
+            <span>Explorer</span>
+        </a>
+        <a href="cart.html" class="nav-item">
+            <i class="fa fa-shopping-bag"></i>
+            <span>Panier</span>
+            <div class="cart-badge" id="cart-count">0</div>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fa fa-user"></i>
+            <span>Profil</span>
+        </a>
+    </nav>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadProductsIntoMarketplace();
+        });
+
+        async function loadProductsIntoMarketplace() {
+            const container = document.getElementById('marketplaceFeed');
+            if (!container) return;
+
+            // Reusing logic from app.js renderProductFeed but targeting different container
+            // For now, app.js automatically targets #productFeed. Let's make it more flexible.
+            await loadProducts(); // This will render into #productFeed if it exists, let's fix.
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Achats Groupés | VMA Elite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="app-shell" style="background: #000;">
+    <header class="app-header">
+        <div class="logo-area" style="padding-left: 15px;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold); margin-right: 15px;"></i>
+            <span class="brand-name">ACHATS GROUPÉS</span>
+        </div>
+    </header>
+
+    <main class="scroll-container" style="padding: 80px 16px 20px;">
+        <div style="background: var(--vma-accent-red); color: #fff; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
+            <i class="fa fa-bolt" style="font-size: 24px;"></i>
+            <div>
+                <div style="font-weight: 800; font-size: 14px;">VENTE FLASH GROUPÉE</div>
+                <div style="font-size: 11px; opacity: 0.9;">Plus on est nombreux, moins c'est cher !</div>
+            </div>
+        </div>
+
+        <div id="groupBuyList" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Group Buy Item -->
+            <div class="group-buy-card">
+                <div style="position: relative;">
+                    <img src="images/15.jpg" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px;">
+                    <div style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); color: var(--vma-gold); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">
+                        <i class="fa fa-clock"></i> <span class="timer">14:22:05</span>
+                    </div>
+                </div>
+                <div style="padding: 15px;">
+                    <h3 style="font-size: 16px; font-weight: 700;">iPhone 15 Pro Max - Container Groupé #24</h3>
+                    <div style="display: flex; align-items: baseline; gap: 10px; margin: 10px 0;">
+                        <span style="font-size: 22px; font-weight: 800; color: var(--vma-accent-red);">685.000 F</span>
+                        <span style="font-size: 14px; text-decoration: line-through; color: var(--text-muted);">785.000 F</span>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+                            <span>Progression: <strong>18/20</strong> participants</span>
+                            <span style="color: var(--vma-accent-red);">Plus que 2 !</span>
+                        </div>
+                        <div style="width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden;">
+                            <div style="width: 90%; height: 100%; background: var(--vma-accent-red); border-radius: 4px;"></div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: -10px; margin-top: 15px;">
+                        <div class="avatar" style="background-image: url('https://i.pravatar.cc/50?u=1')"></div>
+                        <div class="avatar" style="background-image: url('https://i.pravatar.cc/50?u=2')"></div>
+                        <div class="avatar" style="background-image: url('https://i.pravatar.cc/50?u=3')"></div>
+                        <span style="font-size: 11px; color: var(--text-muted); margin-left: 10px;">+15 autres ont rejoint</span>
+                    </div>
+
+                    <button class="vma-btn-primary" style="background: var(--vma-accent-red); color: #fff; width: 100%; margin-top: 20px; border: none;">
+                        REJOINDRE LE GROUPE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .group-buy-card { background: #111; border-radius: 15px; border: 1px solid #222; overflow: hidden; }
+        .avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #111; background-size: cover; margin-left: -10px; }
+        .avatar:first-child { margin-left: 0; }
+    </style>
+
+    <script>
+        // Simple Countdown Timer
+        function startTimer(duration, display) {
+            let timer = duration, hours, minutes, seconds;
+            setInterval(function () {
+                hours = parseInt(timer / 3600, 10);
+                minutes = parseInt((timer % 3600) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = hours + ":" + minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            const time = 14 * 3600 + 22 * 60 + 5;
+            const display = document.querySelector('.timer');
+            startTimer(time, display);
+        };
+    </script>
+</body>
+</html>
