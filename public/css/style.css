@@ -104,11 +104,11 @@
     --text-secondary: #e0e0e0;
     --text-muted: #8c8c8c;
 
-    /* Layout */
+    /* Layout (Tailles Fixes Robustes) */
     --header-height: 130px;
-    --nav-height: 75px;
-    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-    --safe-area-top: env(safe-area-inset-top, 0px);
+    --nav-height: 70px;
+    --safe-area-top: env(safe-area-inset-top, 20px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 10px);
     --border-radius: 12px;
     --transition: all 0.2s ease-in-out;
 }
@@ -121,7 +121,7 @@
     padding: 0;
 }
 
-body {
+body, html {
     background-color: var(--vma-black);
     color: var(--text-primary);
     font-family: 'Poppins', sans-serif;
@@ -129,15 +129,15 @@ body {
     -webkit-font-smoothing: antialiased;
     height: 100%;
     width: 100%;
-    overflow-x: hidden;
+    overflow: hidden; /* Empêche le scroll du body */
 }
 
-/* Layout Containers */
+/* Layout Containers (Flexbox Structure) */
 .app-shell {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
     position: relative;
     background: var(--vma-black);
 }
@@ -145,22 +145,21 @@ body {
 .scroll-container {
     flex: 1;
     overflow-y: auto;
-    padding-top: calc(var(--header-height) + var(--safe-area-top));
-    padding-bottom: calc(var(--nav-height) + var(--safe-area-bottom) + 80px);
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    padding: 15px;
 }
 
 /* --- PREMIUM HEADER --- */
 .app-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    flex-shrink: 0;
     height: calc(var(--header-height) + var(--safe-area-top));
+    padding-top: var(--safe-area-top);
     background: rgba(8, 8, 8, 0.98);
     backdrop-filter: blur(15px);
     z-index: 2000;
-    padding: calc(var(--safe-area-top) + 10px) 16px 10px 16px;
+    padding-left: 16px;
+    padding-right: 16px;
     border-bottom: 1px solid #222;
     display: flex;
     flex-direction: column;
@@ -537,18 +536,15 @@ body {
 
 /* --- BOTTOM NAVIGATION --- */
 .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    flex-shrink: 0;
     height: calc(var(--nav-height) + var(--safe-area-bottom));
+    padding-bottom: var(--safe-area-bottom);
     background: rgba(10, 10, 10, 0.98);
     border-top: 1px solid #222;
     display: flex;
     justify-content: space-around;
     align-items: center;
     z-index: 2000;
-    padding-bottom: var(--safe-area-bottom);
 }
 
 /* --- RESPONSIVE ADAPTATIONS (TABLETS & DESKTOPS) --- */

@@ -8,15 +8,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body class="app-shell" style="background: #000;">
+<body class="app-shell">
     <header class="app-header">
-        <div class="search-container" style="margin-top: 10px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <span class="brand-name">MARKETPLACE</span>
+            <div class="header-actions">
+                <i class="fa fa-filter" style="font-size: 18px;"></i>
+            </div>
+        </div>
+        <div class="search-container">
             <i class="fa fa-search"></i>
             <input type="text" placeholder="Rechercher des produits certifiés..." id="marketplaceSearch">
         </div>
     </header>
 
-    <main class="scroll-container" style="padding-top: 80px;">
+    <main class="scroll-container">
         <!-- CATEGORIES HORIZONTAL -->
         <div class="categories-tabs">
             <div class="tab active">Tout</div>

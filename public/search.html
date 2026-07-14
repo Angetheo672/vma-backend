@@ -8,10 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body class="app-shell" style="background: #000;">
-    <header class="app-header" style="height: 70px;">
-        <div style="padding: 10px 15px; display: flex; gap: 10px; align-items: center; width: 100%;">
-            <i class="fa fa-chevron-left" onclick="history.back()"></i>
+<body class="app-shell">
+    <header class="app-header">
+        <div style="display: flex; gap: 15px; align-items: center; width: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold); font-size: 20px;"></i>
             <div class="search-container" style="flex: 1; margin: 0;">
                 <i class="fa fa-search"></i>
                 <input type="text" id="searchInput" placeholder="Que recherchez-vous ?" autofocus>
@@ -19,7 +19,7 @@
         </div>
     </header>
 
-    <main class="scroll-container" style="padding: 80px 16px 20px;">
+    <main class="scroll-container">
         <!-- SUGGESTIONS -->
         <div id="suggestions" style="margin-bottom: 30px;">
             <h4 style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">RECHERCHES POPULAIRES</h4>
