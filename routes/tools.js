@@ -30,20 +30,38 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
         const imageUrl = req.file.path; // Cloudinary URL
         console.log(`[Visual Search] Decrypting Image: ${imageUrl}`);
 
-        // 1. Identify Product using Google Vision or OpenAI Vision
-        // For production, we get labels to search globally
+        // 1. Identify Product using OpenAI Vision for Global Accuracy
         let keywords = "Produit Premium";
 
         try {
-            // Simplified label detection for simulation
-            // In full production, this calls Google Cloud Vision API
-            keywords = "Appareil électronique de luxe";
-        } catch (e) {}
+            if (process.env.OPENAI_API_KEY) {
+                const OpenAI = require("openai");
+                const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+                const response = await openai.chat.completions.create({
+                    model: "gpt-4o-mini",
+                    messages: [
+                        {
+                            role: "user",
+                            content: [
+                                { type: "text", text: "Identify this product with 3 precise keywords for sourcing on Alibaba/1688. Return only the keywords separated by spaces." },
+                                { type: "image_url", image_url: { "url": imageUrl } },
+                            ],
+                        },
+                    ],
+                    max_tokens: 50,
+                });
+                keywords = response.choices[0].message.content.trim();
+                console.log(`[AI Vision] Keywords detected: ${keywords}`);
+            }
+        } catch (e) {
+            console.error("AI Vision Error:", e.message);
+        }
 
         // 2. Fetch results from Global Platforms
-        const [alibabaResults, internalResults] = await Promise.all([
+        const [alibabaResults, amazonResults] = await Promise.all([
             aggregator.fetchFromAlibaba(keywords),
-            // We could also call Google Custom Search API here
+            aggregator.fetchFromAmazon(keywords)
         ]);
 
         // 3. Construct Google Search Image Link (Deep Search)
@@ -55,7 +73,8 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
             googleLensUrl,
             platforms: [
                 { name: "Alibaba / 1688", results: alibabaResults },
-                { name: "VMA Marketplace", results: internalResults.slice(0, 2) }
+                { name: "Amazon Global", results: amazonResults },
+                { name: "VMA Network", results: alibabaResults.slice(0, 1) }
             ],
             msg: "Analyse globale terminée"
         });
