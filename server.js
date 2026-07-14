@@ -60,15 +60,15 @@ app.get('/', (req, res) => {
 // START SERVER
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`VMA Server running at http://192.168.1.86:${PORT}`);
-    console.log(`Accessible from your phone on the same WiFi`);
+    console.log(`VMA Server is running on port ${PORT}`);
 
-    // AUTO-WAKEUP STRATEGY (CTO Master Class)
-    // Pinger le serveur toutes les 10 minutes pour éviter la mise en veille de Render
-    const axios = require('axios');
-    setInterval(() => {
-        axios.get('https://vma-backend.onrender.com/health')
-            .then(() => console.log('Self-ping: VMA Server is Awake ✅'))
-            .catch(err => console.log('Self-ping failed, but that is okay.'));
-    }, 600000); // 600 000 ms = 10 minutes
+    // AUTO-WAKEUP STRATEGY (Only if a URL is provided)
+    if (process.env.APP_URL) {
+        const axios = require('axios');
+        setInterval(() => {
+            axios.get(`${process.env.APP_URL}/health`)
+                .then(() => console.log('Self-ping: VMA Server is Awake ✅'))
+                .catch(err => console.log('Self-ping skipped.'));
+        }, 600000); // 10 minutes
+    }
 });
