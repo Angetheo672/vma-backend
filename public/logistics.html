@@ -94,11 +94,100 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 
+    <script src="js/api.js"></script>
     <script>
-        function trackOrder() {
-            const code = document.getElementById('trackingCode').value;
-            if (!code) return;
-            document.getElementById('trackingResult').style.display = 'block';
+        async function trackOrder() {
+            const code = document.getElementById('trackingCode').value.trim();
+            if (!code) {
+                if(window.Android) Android.showToast("Veuillez entrer un code.");
+                return;
+            }
+
+            const resultDiv = document.getElementById('trackingResult');
+            resultDiv.style.display = 'none';
+
+            try {
+                // Appel API réel vers le backend
+                const response = await fetch(`${API_BASE_URL}/logistics/track/${code}`);
+                const resData = await response.json();
+
+                if (!response.ok) throw new Error(resData.msg);
+
+                resultDiv.style.display = 'block';
+                renderTrackingUI(resData);
+
+            } catch (err) {
+                if(window.Android) Android.showToast(err.message);
+                else alert(err.message);
+            }
+        }
+
+        function renderTrackingUI(res) {
+            const resultDiv = document.getElementById('trackingResult');
+
+            if (res.type === 'product') {
+                resultDiv.innerHTML = `
+                    <div style="background: #1a1a1a; padding: 25px; border-radius: 20px; border: 1px solid #222;">
+                        <div style="text-align:center; margin-bottom:15px;">
+                            <img src="${res.data.image}" style="width:100px; height:100px; object-fit:cover; border-radius:15px; margin-bottom:10px;">
+                            <h3 style="color:#fff; font-size:16px;">${res.data.name}</h3>
+                            <p style="color:var(--vma-gold); font-size:12px; font-weight:700;">${res.data.vmaId}</p>
+                        </div>
+                        <div style="padding:15px; background:#111; border-radius:12px; text-align:center;">
+                            <span style="color:#fff; font-size:13px;">Statut : </span>
+                            <span style="color:var(--vma-green); font-weight:700;">${res.data.status}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (res.type === 'logistic') {
+                const log = res.data;
+                const statusMap = {
+                    'en_attente': 'Préparation',
+                    'collecte': 'Reçu à l\'entrepôt',
+                    'en_transit': 'En Transit',
+                    'douane': 'Dédouanement',
+                    'arrive': 'Arrivé à Destination',
+                    'livre': 'Livré'
+                };
+
+                resultDiv.innerHTML = `
+                    <div style="background: #1a1a1a; padding: 25px; border-radius: 20px; border: 1px solid #222;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                            <div>
+                                <div style="font-size: 11px; color: var(--text-muted);">Suivi : ${log.trackingNumber}</div>
+                                <div style="font-size: 16px; font-weight: 800; color: var(--vma-gold);">${statusMap[log.status] || log.status}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 11px; color: var(--text-muted);">Transporteur</div>
+                                <div style="font-size: 14px; font-weight: 700;">${log.carrier}</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline" id="timelineList">
+                            ${log.history && log.history.length > 0 ?
+                                log.history.map((h, i) => `
+                                    <div class="timeline-item ${i === 0 ? 'active' : ''}">
+                                        <div class="dot"></div>
+                                        <div class="info">
+                                            <div class="title">${h.location || 'Localisation inconnue'}</div>
+                                            <div class="desc">${statusMap[h.status] || h.status}</div>
+                                            <div class="time">${new Date(h.timestamp).toLocaleString('fr-FR')}</div>
+                                        </div>
+                                    </div>
+                                `).join('') :
+                                `<div class="timeline-item active">
+                                    <div class="dot"></div>
+                                    <div class="info">
+                                        <div class="title">${log.location}</div>
+                                        <div class="desc">${statusMap[log.status]}</div>
+                                        <div class="time">Mise à jour en cours...</div>
+                                    </div>
+                                </div>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         function openScanner() {
