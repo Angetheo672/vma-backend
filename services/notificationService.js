@@ -6,15 +6,25 @@ const admin = require('firebase-admin');
 const initFirebase = () => {
     if (!admin.apps.length) {
         try {
-            // Tentative de chargement du fichier de config Firebase
-            // Si absent, le service fonctionnera en mode simulation
-            const serviceAccount = require("../config/firebase-auth.json");
+            let serviceAccount;
+
+            // 1. Priorité à la variable d'environnement (Railway)
+            if (process.env.FIREBASE_CONFIG_JSON) {
+                serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG_JSON);
+                console.log("✅ Firebase initialisé via variable d'environnement");
+            }
+            // 2. Repli sur le fichier local (Développement)
+            else {
+                serviceAccount = require("../config/firebase-auth.json");
+                console.log("✅ Firebase initialisé via fichier local");
+            }
+
             admin.initializeApp({
                 credential: admin.credential.cert(serviceAccount)
             });
-            console.log("✅ Firebase Admin initialisé");
         } catch (e) {
-            console.log("⚠️ Firebase Config absent. Notifications en mode simulation.");
+            console.log("⚠️ Firebase Config absent ou invalide. Mode simulation actif.");
+            console.error("Détail erreur Firebase:", e.message);
         }
     }
 };

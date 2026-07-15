@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Mode Hors-Ligne | Vision Market Africa</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            color: #fff;
+            text-align: center;
+        }
+        .offline-container {
+            padding: 20px;
+            max-width: 400px;
+        }
+        .icon-wrap {
+            font-size: 80px;
+            color: var(--vma-gold);
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .icon-wrap i {
+            animation: pulse 2s infinite;
+        }
+        .wifi-slash {
+            position: absolute;
+            font-size: 40px;
+            color: #ff4d4d;
+            bottom: 0;
+            right: 35%;
+        }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 10px; letter-spacing: -1px; }
+        p { color: #888; font-size: 15px; margin-bottom: 30px; line-height: 1.5; }
+        .retry-btn {
+            background: var(--vma-gold);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .retry-btn:active { transform: scale(0.95); }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .premium-footer {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="icon-wrap">
+            <i class="fa fa-wifi"></i>
+            <i class="fa fa-slash wifi-slash"></i>
+        </div>
+        <h1>CONNEXION PERDUE</h1>
+        <p>Il semble que vous soyez hors-ligne. L'expérience VMA Elite nécessite une connexion internet pour synchroniser les prix mondiaux en temps réel.</p>
+
+        <button onclick="window.location.reload()" class="retry-btn">
+            <i class="fa fa-sync"></i> RÉESSAYER
+        </button>
+    </div>
+
+    <div class="premium-footer">
+        <img src="images/logo.jpeg" alt="VMA" style="width: 50px; border-radius: 10px; opacity: 0.5;">
+        <p style="font-size: 10px; color: #444; margin-top: 10px;">VISION MARKET AFRICA ELITE v3.0</p>
+    </div>
+
+    <script>
+        // Check connectivity every 5 seconds and reload if back online
+        setInterval(() => {
+            if (navigator.onLine) {
+                window.location.reload();
+            }
+        }, 5000);
+
+        // Also check on online event
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>

@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body style="background: #000; min-height: 100vh; display: flex; flex-direction: column; margin: 0; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;">
+    <!-- Elite Loading Overlay -->
+    <div id="elite-loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease;">
+        <div class="loader-circle" style="width: 60px; height: 60px; border: 3px solid #111; border-top: 3px solid var(--vma-gold); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <img src="images/logo.jpeg" style="width: 40px; position: absolute; border-radius: 10px;">
+        <p style="margin-top: 20px; color: var(--vma-gold); font-size: 10px; letter-spacing: 2px; font-weight: 700;">INITIALISATION ELITE...</p>
+    </div>
+
     <!-- Animated Background -->
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at top right, #1a1a1a, #000); z-index: -1;"></div>
 
@@ -48,8 +55,19 @@
     </footer>
 
     <style>
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
+
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('elite-loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 500);
+            }, 800); // Petit délai pour laisser le temps au rendu de se stabiliser
+        });
+    </script>
 </body>
 </html>

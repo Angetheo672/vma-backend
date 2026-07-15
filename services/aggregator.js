@@ -17,13 +17,30 @@ class AggregatorService {
                            .replace(/China/g, 'Chine');
             };
 
-            // Priority 1: Real Sourcing API (e.g. RapidAPI)
+            // Priority 1: Real Sourcing API (RapidAPI - Alibaba/1688 Open API)
             if (process.env.RAPID_API_KEY && !process.env.RAPID_API_KEY.includes('votre_cle')) {
-                const response = await axios.get(`https://alibaba-sourcing-api.p.rapidapi.com/search`, {
-                    params: { q: query },
-                    headers: { 'X-RapidAPI-Key': process.env.RAPID_API_KEY }
+                const response = await axios.get(`https://alibaba-1688-open-api.p.rapidapi.com/SearchKeywords`, {
+                    params: {
+                        keywords: query,
+                        page: "1",
+                        language: "en"
+                    },
+                    headers: {
+                        'x-rapidapi-key': process.env.RAPID_API_KEY,
+                        'x-rapidapi-host': 'alibaba-1688-open-api.p.rapidapi.com'
+                    }
                 });
-                return response.data.products.map(p => ({ ...p, name: translateToFrench(p.name) }));
+
+                // Adaptation des données reçues (Mapping standard VMA)
+                const items = response.data.items || response.data.products || [];
+                return items.map(p => ({
+                    name: translateToFrench(p.title || p.name),
+                    price: parseFloat(p.price || 0) * 85, // Conversion approximative Yuan -> FCFA (ajustable)
+                    image: p.image || p.imageUrl || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300",
+                    source: "1688",
+                    rating: 4.8,
+                    isVerified: true
+                }));
             }
 
             // Priority 2: Professional Simulation (for Global Showcase)
