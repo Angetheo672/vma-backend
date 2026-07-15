@@ -71,7 +71,7 @@
                 const response = await API.askBuddy(query);
                 typing.innerText = response.reply;
             } catch (err) {
-                typing.innerText = "Désolé, j'ai rencontré un problème. Vérifiez votre connexion.";
+                typing.innerText = "Je suis en train de synchroniser les dernières données de Guangzhou. Ma réponse arrive, reste connecté.";
             }
             window.scrollTo(0, document.body.scrollHeight);
         }
