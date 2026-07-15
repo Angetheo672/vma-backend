@@ -2,46 +2,120 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VMA Emma | Assistant IA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VMA Emma | Intelligence Sourcing</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        .chat-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #000;
+            padding-bottom: 120px; /* Space for input */
+        }
+        .msg-bot, .msg-user {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+        .msg-bot {
+            background: #111;
+            color: #eee;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #222;
+        }
+        .msg-user {
+            background: var(--vma-gold);
+            color: #000;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.2);
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(8,8,8,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            border-top: 1px solid #1a1a1a;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            z-index: 2000;
+        }
+        .chat-input {
+            flex: 1;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: #fff;
+            font-family: inherit;
+            outline: none;
+            font-size: 14px;
+        }
+        .chat-input:focus { border-color: var(--vma-gold); }
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--vma-gold);
+            border: none;
+            border-radius: 50%;
+            color: #000;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .send-btn:active { transform: scale(0.9); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Typing Indicator */
+        .typing { font-style: italic; color: #555; font-size: 12px; margin-left: 5px; }
+    </style>
 </head>
-<body class="app-shell" style="background: #000;">
-    <header class="app-header" style="height: 60px; display: flex; align-items: center; background: #111;">
-        <div style="padding: 0 15px; display: flex; align-items: center; gap: 15px;">
-            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold);"></i>
+<body class="app-shell">
+    <header class="app-header" style="height: 65px;">
+        <div style="display: flex; align-items: center; gap: 15px; width: 100%;">
+            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold); font-size: 20px;"></i>
             <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 35px; height: 35px; background: #ff4d94; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; border: 2px solid var(--vma-gold);">
-                    <i class="fa fa-robot"></i>
+                <div style="width: 38px; height: 38px; background: #ff4d94; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--vma-gold);">
+                    <i class="fa fa-robot" style="color: #fff;"></i>
                 </div>
                 <div>
-                    <div style="font-size: 14px; font-weight: 700;">VMA Emma</div>
-                    <div style="font-size: 10px; color: var(--vma-green);">En ligne</div>
+                    <div style="font-size: 15px; font-weight: 800; color: #fff;">EMMA IA ELITE</div>
+                    <div style="font-size: 10px; color: var(--vma-green); font-weight: 700;"><i class="fa fa-circle" style="font-size: 8px;"></i> ANALYSE TEMPS RÉEL</div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main id="chatContainer" style="padding: 70px 15px 100px; display: flex; flex-direction: column; gap: 15px;">
-        <div class="msg-bot">Bonjour ! Je suis Emma, votre assistante VMA. Comment puis-je vous aider aujourd'hui ?</div>
+    <main class="chat-body" id="chatContainer">
+        <div class="msg-bot">Bonjour ! Je suis Emma, Directrice du Sourcing VMA. Je suis connectée aux bases de données de Guangzhou et Istanbul. Que voulez-vous importer aujourd'hui ?</div>
     </main>
 
-    <div style="position: fixed; bottom: 0; width: 100%; background: #111; padding: 15px; border-top: 1px solid #222; display: flex; gap: 10px; z-index: 1000;">
-        <input type="text" id="chatInput" placeholder="Posez une question..." style="flex: 1; background: #000; border: 1px solid #333; padding: 12px; border-radius: 20px; color: #fff; font-family: inherit; outline: none;">
-        <button id="sendBtn" style="width: 45px; height: 45px; background: var(--vma-gold); border: none; border-radius: 50%; color: #000; font-size: 18px;">
+    <div class="input-area">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Parlez-moi de votre projet d'import..." autocomplete="off">
+        <button id="sendBtn" class="send-btn">
             <i class="fa fa-paper-plane"></i>
         </button>
     </div>
-
-    <style>
-        .msg-bot, .msg-user {
-            max-width: 80%; padding: 12px 16px; border-radius: 15px; font-size: 13px; line-height: 1.5;
-        }
-        .msg-bot { background: #1a1a1a; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #222; }
-        .msg-user { background: var(--vma-gold); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; font-weight: 500; }
-    </style>
 
     <script src="js/api.js"></script>
     <script>
@@ -49,35 +123,66 @@
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
 
+        // Système de mémoire illimitée (Historique local)
+        let chatHistory = [];
+
+        function appendMessage(role, content) {
+            const msg = document.createElement('div');
+            msg.className = role === 'user' ? 'msg-user' : 'msg-bot';
+            msg.innerText = content;
+            chatContainer.appendChild(msg);
+
+            // Auto-scroll à chaque nouveau message
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+
+            // On garde les 10 derniers messages en mémoire pour l'IA
+            if (role !== 'system') {
+                chatHistory.push({ role, content });
+            }
+        }
+
         async function sendMessage() {
             const query = chatInput.value.trim();
             if (!query) return;
 
-            // Add user message
-            const userMsg = document.createElement('div');
-            userMsg.className = 'msg-user';
-            userMsg.innerText = query;
-            chatContainer.appendChild(userMsg);
+            appendMessage('user', query);
             chatInput.value = '';
-            window.scrollTo(0, document.body.scrollHeight);
 
-            // Show typing indicator
+            // Indicateur de réflexion
             const typing = document.createElement('div');
-            typing.className = 'msg-bot';
-            typing.innerText = '...';
+            typing.className = 'msg-bot typing';
+            typing.id = 'typingIndicator';
+            typing.innerText = "Emma analyse le marché...";
             chatContainer.appendChild(typing);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                const response = await API.askBuddy(query);
-                typing.innerText = response.reply;
+                // On envoie l'historique complet pour une conversation "Continue"
+                const response = await API.request('/ai/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        query: query,
+                        history: chatHistory.slice(-10) // Contexte glissant
+                    })
+                });
+
+                document.getElementById('typingIndicator').remove();
+                appendMessage('bot', response.reply);
+
             } catch (err) {
-                typing.innerText = "Je suis en train de synchroniser les dernières données de Guangzhou. Ma réponse arrive, reste connecté.";
+                if (document.getElementById('typingIndicator')) document.getElementById('typingIndicator').remove();
+                appendMessage('bot', "Ma connexion aux usines chinoises est instable. Mais ne baissez pas les bras, réessayez dans un instant.");
             }
-            window.scrollTo(0, document.body.scrollHeight);
         }
 
         sendBtn.onclick = sendMessage;
         chatInput.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
+
+        // Focus auto sur l'input
+        window.onload = () => chatInput.focus();
     </script>
 </body>
 </html>

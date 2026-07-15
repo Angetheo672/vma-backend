@@ -8,24 +8,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body style="background: #000; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;">
+<body style="background: #000; min-height: 100vh; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;">
 
-    <div class="gateway-wrapper" style="width: 100%; max-width: 450px; text-align: center; animation: fadeIn 0.8s ease-out;">
+    <div class="gateway-wrapper" style="width: 100%; max-width: 450px; text-align: center; animation: fadeIn 0.8s ease-out; padding: calc(env(safe-area-inset-top) + 30px) 20px calc(env(safe-area-inset-bottom) + 30px) 20px; margin: auto 0;">
 
         <!-- Premium Logo Header -->
-        <div style="margin-bottom: 40px;">
-            <img src="images/logo.jpeg" alt="VMA Logo" style="width: 90px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 0 30px rgba(255,215,0,0.3);">
-            <h1 style="font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 5px; letter-spacing: -1px;">VISION MARKET AFRICA</h1>
+        <div style="margin-bottom: 30px;">
+            <img src="images/logo.jpeg" alt="VMA Logo" style="width: 80px; border-radius: 22px; margin-bottom: 15px; box-shadow: 0 0 30px rgba(255,215,0,0.3); border: 1.5px solid var(--vma-gold);">
+            <h1 style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; letter-spacing: -1px;">VISION MARKET AFRICA</h1>
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <div style="height: 1px; width: 30px; background: var(--vma-gold); opacity: 0.5;"></div>
-                <p style="color: var(--vma-gold); font-size: 11px; letter-spacing: 3px; font-weight: 600; text-transform: uppercase;">Connecting Africa to Global Trade</p>
-                <div style="height: 1px; width: 30px; background: var(--vma-gold); opacity: 0.5;"></div>
+                <div style="height: 1px; width: 20px; background: var(--vma-gold); opacity: 0.5;"></div>
+                <p style="color: var(--vma-gold); font-size: 10px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase;">Connecting Africa to Global Trade</p>
+                <div style="height: 1px; width: 20px; background: var(--vma-gold); opacity: 0.5;"></div>
             </div>
         </div>
 
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 30px;">Choisissez votre profil pour accéder à l'écosystème</p>
+        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 25px;">Choisissez votre profil pour accéder à l'écosystème</p>
 
-        <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
 
             <!-- CLIENT APP -->
             <div onclick="selectRole('buyer')" class="role-card">
@@ -76,7 +76,7 @@
             </div>
 
             <!-- VISITOR -->
-            <div onclick="selectRole('visitor')" class="role-card" style="margin-top: 10px; border-style: dashed; opacity: 0.8;">
+            <div onclick="selectRole('visitor')" class="role-card" style="margin-top: 5px; border-style: dashed; opacity: 0.8;">
                 <div class="role-icon" style="background: transparent; color: #555; border: 1px dashed #444;">
                     <i class="fa fa-eye"></i>
                 </div>
@@ -88,13 +88,30 @@
             </div>
         </div>
 
-        <div style="margin-top: 50px; opacity: 0.4;">
+        <div style="margin-top: 40px; opacity: 0.4; padding-bottom: 20px;">
             <p style="font-size: 10px; color: #fff;">VMA Global Trade © 2026 - Master Class Edition</p>
         </div>
     </div>
 
     <style>
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .role-card {
+            background: #111;
+            padding: 15px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #222;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .role-card:active { transform: scale(0.98); background: #1a1a1a; border-color: var(--vma-gold); }
+        .role-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .role-info { text-align: left; flex: 1; }
+        .role-info h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+        .role-info p { font-size: 10px; color: #666; }
+        .role-chevron { font-size: 12px; color: #333; }
     </style>
 
     <script src="js/api.js"></script>

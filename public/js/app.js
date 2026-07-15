@@ -48,16 +48,30 @@ function updateUserProfile() {
     const profileContainer = document.querySelector('.top-nav-right') || document.querySelector('.header-actions');
 
     if (user && profileContainer) {
-        const photoUrl = user.photo || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.name) + '&background=D4AF37&color=fff';
+        // Déterminer le nom à afficher (Prénom ou Nom complet)
+        const displayName = user.firstName || user.fullName || "Elite";
+
+        // Utiliser la photo du compte ou une icône Google-style par défaut
+        const photoUrl = user.photo || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=D4AF37&color=fff&bold=true';
+
         profileContainer.innerHTML = `
-            <div class="user-profile-circle" onclick="location.href='profile.html'">
-                <img src="${photoUrl}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%; border:2px solid var(--vma-gold);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="user-info-text" style="text-align: right; display: none;">
+                    <div style="font-size: 10px; color: var(--vma-gold); font-weight: 700; text-transform: uppercase;">Bonjour,</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #fff;">${displayName}</div>
+                </div>
+                <div class="user-profile-circle" onclick="location.href='profile.html'" style="width: 38px; height: 38px; border: 2px solid var(--vma-gold); position: relative;">
+                    <img src="${photoUrl}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                    <div style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #52c41a; border-radius: 50%; border: 1.5px solid #000;"></div>
+                </div>
             </div>
-            <a href="cart.html" class="cart-icon">
-                <i class="fa fa-shopping-bag"></i>
-                <span id="cart-count">0</span>
-            </a>
         `;
+
+        // On affiche le texte si l'écran est assez large
+        if (window.innerWidth > 360) {
+            const textInfo = profileContainer.querySelector('.user-info-text');
+            if (textInfo) textInfo.style.display = 'block';
+        }
     }
 }
 
