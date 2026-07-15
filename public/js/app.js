@@ -139,9 +139,9 @@ function renderProductFeed() {
 
     feed.innerHTML = VMA_DATA.products.map(product => {
         const source = product.source || (Math.random() > 0.5 ? '1688' : 'VMA');
-        const sourceColor = source === '1688' ? '#ff6600' : 'var(--vma-gold)';
+        const sourceColor = source === '1688' ? '#ff6600' : (source === 'Amazon' ? '#232f3e' : 'var(--vma-gold)');
         const discount = product.oldPrice ? Math.round((1 - (product.price / product.oldPrice)) * 100) : null;
-        const img = (product.images && product.images[0]) || 'https://via.placeholder.com/300?text=VMA';
+        const img = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/300?text=VMA';
 
         return `
             <div class="modern-card" onclick="location.href='product.html?id=${product._id}'">
@@ -156,10 +156,8 @@ function renderProductFeed() {
                 <div class="card-body">
                     <h3 class="product-name">${product.name}</h3>
                     <div class="price-container">
-                        <div class="price-row">
-                            <span class="current-price">${formatPrice(product.price)} F</span>
-                            ${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)} F</span>` : ''}
-                        </div>
+                        <span class="current-price">${formatPrice(product.price)} F</span>
+                        ${source === '1688' || source === 'Alibaba' ? '<span class="best-price-badge">PRIX USINE</span>' : ''}
                     </div>
                     <div class="card-footer">
                         <div class="rating"><i class="fa fa-star"></i> ${product.rating || '4.8'}</div>

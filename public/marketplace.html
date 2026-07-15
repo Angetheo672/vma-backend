@@ -3,51 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Marketplace | VMA Elite</title>
+    <title>Marketplace Mondiale | VMA Elite</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body class="app-shell">
-    <header class="app-header">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-            <span class="brand-name">MARKETPLACE</span>
+    <header class="app-header" style="height: 140px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="images/logo.jpeg" style="width: 30px; border-radius: 8px; border: 1px solid var(--vma-gold);">
+                <span class="brand-name" style="font-size: 16px;">VMA MARKETPLACE</span>
+            </div>
             <div class="header-actions">
-                <i class="fa fa-filter" style="font-size: 18px;"></i>
+                <div style="background: rgba(255,215,0,0.1); padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; color: var(--vma-gold);">LIVE SOURCING</div>
             </div>
         </div>
         <div class="search-container">
             <i class="fa fa-search"></i>
-            <input type="text" placeholder="Rechercher des produits certifiés..." id="marketplaceSearch">
+            <input type="text" placeholder="Chercher dans les usines mondiales..." id="mktSearch">
+            <i class="fa fa-camera" onclick="location.href='visual_search.html'" style="margin-left: 10px; color: var(--vma-gold);"></i>
         </div>
     </header>
 
     <main class="scroll-container">
-        <!-- CATEGORIES HORIZONTAL -->
+        <!-- CATEGORIES ELITE -->
         <div class="categories-tabs">
-            <div class="tab active">Tout</div>
-            <div class="tab">Électronique</div>
-            <div class="tab">Mode</div>
-            <div class="tab">Sourcing 1688</div>
-            <div class="tab">Gros</div>
+            <div class="tab active" data-cat="all">🌍 Tout</div>
+            <div class="tab" data-cat="Electronics">💻 Électronique</div>
+            <div class="tab" data-cat="Fashion">👕 Mode</div>
+            <div class="tab" data-cat="1688">🏮 Usines Chine</div>
+            <div class="tab" data-cat="Amazon">📦 Amazon/USA</div>
         </div>
 
         <div class="p-16">
+            <div id="mktStatus" style="font-size: 11px; color: #555; margin-bottom: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">SÉLECTION ÉLITE EN TEMPS RÉEL</div>
             <div class="main-grid" id="marketplaceFeed">
-                <!-- Dynamically loaded -->
+                <!-- Data from app.js -->
             </div>
+        </div>
+
+        <div id="mktLoader" style="display: none; text-align: center; padding: 40px;">
+            <i class="fa fa-spinner fa-spin" style="color: var(--vma-gold); font-size: 30px;"></i>
+            <p style="margin-top: 15px; color: #555; font-size: 13px;">Synchronisation avec les hubs logistiques...</p>
         </div>
     </main>
 
     <style>
-        .categories-tabs {
-            display: flex; gap: 10px; overflow-x: auto; padding: 10px 16px; scrollbar-width: none;
-        }
+        .categories-tabs { display: flex; gap: 10px; overflow-x: auto; padding: 10px 16px; scrollbar-width: none; }
         .categories-tabs::-webkit-scrollbar { display: none; }
-        .tab {
-            white-space: nowrap; padding: 8px 18px; background: #111; border: 1px solid #222; border-radius: 20px; font-size: 12px; font-weight: 500;
-        }
-        .tab.active { background: var(--vma-gold); color: #000; border-color: var(--vma-gold); }
+        .tab { white-space: nowrap; padding: 8px 18px; background: #0a0a0a; border: 1px solid #222; border-radius: 25px; font-size: 11px; font-weight: 600; color: #666; transition: 0.3s; }
+        .tab.active { background: var(--vma-gold); color: #000; border-color: var(--vma-gold); box-shadow: 0 5px 15px rgba(255,215,0,0.2); }
     </style>
 
     <nav class="bottom-nav">
@@ -74,17 +80,73 @@
     <script src="js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            await loadProductsIntoMarketplace();
+            await initMarketplace();
         });
 
-        async function loadProductsIntoMarketplace() {
-            const container = document.getElementById('marketplaceFeed');
-            if (!container) return;
+        async function initMarketplace() {
+            const feed = document.getElementById('marketplaceFeed');
+            const loader = document.getElementById('mktLoader');
 
-            // Reusing logic from app.js renderProductFeed but targeting different container
-            // For now, app.js automatically targets #productFeed. Let's make it more flexible.
-            await loadProducts(); // This will render into #productFeed if it exists, let's fix.
+            try {
+                loader.style.display = 'block';
+                const products = await API.getProducts();
+                VMA_DATA.products = products;
+                loader.style.display = 'none';
+                renderMarketplace();
+            } catch (err) {
+                console.error(err);
+                loader.style.display = 'none';
+            }
         }
+
+        function renderMarketplace() {
+            const feed = document.getElementById('marketplaceFeed');
+            if (!feed) return;
+
+            feed.innerHTML = VMA_DATA.products.map(product => {
+                const img = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/300';
+                const source = product.source || 'VMA';
+                return `
+                    <div class="modern-card" onclick="location.href='product.html?id=${product._id}'">
+                        <div class="card-image-wrap">
+                            <img src="${img}" alt="${product.name}">
+                            <div class="source-tag" style="background: ${source === '1688' ? '#ff6600' : 'var(--vma-gold)'}">${source}</div>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="product-name">${product.name}</h3>
+                            <div class="price-row">
+                                <span class="current-price">${new Intl.NumberFormat('fr-FR').format(product.price)} F</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Logic de recherche temps réel
+        document.getElementById('mktSearch').oninput = async (e) => {
+            const query = e.target.value.trim().toLowerCase();
+            const results = VMA_DATA.products.filter(p => p.name.toLowerCase().includes(query));
+
+            const feed = document.getElementById('marketplaceFeed');
+            feed.innerHTML = results.map(product => {
+                const img = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/300';
+                return `
+                    <div class="modern-card" onclick="location.href='product.html?id=${product._id}'">
+                        <div class="card-image-wrap">
+                            <img src="${img}" alt="${product.name}">
+                            <div class="source-tag" style="background: var(--vma-gold)">VMA</div>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="product-name">${product.name}</h3>
+                            <div class="price-row">
+                                <span class="current-price">${new Intl.NumberFormat('fr-FR').format(product.price)} F</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
     </script>
 </body>
 </html>
