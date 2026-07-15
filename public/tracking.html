@@ -132,6 +132,23 @@
                                 <div class="desc">Commande enregistrée et numéro de suivi ${data.trackingNumber} attribué.</div>
                             </div>
                         `;
+                    } else if (res.type === 'external') {
+                        statusTitle.innerText = data.status;
+                        originDest[0].innerText = "Hub International";
+                        originDest[1].innerText = "Transfert Afrique";
+                        estimation.innerText = data.carrier + " - " + data.source;
+
+                        timeline.innerHTML = `
+                            <div class="timeline-item active">
+                                <div class="dot"></div>
+                                <div class="time">EN DIRECT</div>
+                                <div class="desc"><strong>${data.carrier}:</strong> ${data.checkpoint}</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="dot"></div>
+                                <div class="desc">Localisation actuelle: ${data.location}</div>
+                            </div>
+                        `;
                     } else if (res.type === 'product') {
                         statusTitle.innerText = data.status;
                         originDest[0].innerText = "Usine Source";
