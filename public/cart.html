@@ -99,6 +99,9 @@
         document.addEventListener('DOMContentLoaded', () => { renderCart(); });
 
         function renderCart() {
+            // Nettoyage de sécurité
+            VMA_DATA.cart = VMA_DATA.cart.filter(item => item !== null);
+
             const list = document.getElementById('cartItemsList');
             const totalDisplay = document.getElementById('cartTotal');
             const emptyState = document.getElementById('emptyCart');
@@ -159,7 +162,11 @@
             if(!userPhone) return alert("Entrez votre numéro");
 
             try {
-                const total = VMA_DATA.cart.reduce((s, i) => s + i.price, 0);
+                // Nettoyage final du panier
+                VMA_DATA.cart = VMA_DATA.cart.filter(item => item !== null);
+                if (VMA_DATA.cart.length === 0) throw new Error("Votre panier est vide");
+
+                const total = VMA_DATA.cart.reduce((s, i) => s + (i.price || 0), 0);
 
                 // 1. Create Order
                 const order = await API.createOrder({

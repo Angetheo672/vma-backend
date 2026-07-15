@@ -2,58 +2,53 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Connexion | Vision Market Africa</title>
-
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        body { background: #000; overflow: hidden; }
+        .auth-card { animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
 </head>
-<body>
-
-    <div class="login-container">
-        <div class="login-card">
-            <a href="index.html">
-                <img src="images/logo.jpeg" class="login-logo" alt="VMA Logo" onerror="this.src='https://via.placeholder.com/90?text=VMA'">
-            </a>
-            <h2>Bon retour !</h2>
-            <p>Connectez-vous pour accéder à votre compte VMA</p>
-
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="input-box">
-                    <i class="fa fa-envelope"></i>
-                    <input type="email" id="email" placeholder="Adresse Email" required>
-                </div>
-                <div class="input-box">
-                    <i class="fa fa-lock"></i>
-                    <input type="password" id="password" placeholder="Mot de passe" required>
+<body class="app-shell">
+    <main class="scroll-container" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <div class="auth-container" style="width: 100%; max-width: 400px;">
+            <div class="auth-card">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <img src="images/logo.jpeg" style="width: 80px; border-radius: 20px; border: 2px solid var(--vma-gold); box-shadow: 0 10px 20px rgba(255,215,0,0.2);">
+                    <h2 style="margin-top: 15px; font-weight: 800; letter-spacing: -1px;">BON RETOUR !</h2>
+                    <p style="font-size: 13px; color: #666;">Accédez à votre espace Vision Market Africa</p>
                 </div>
 
-                <div style="text-align: right; margin-bottom: 20px;">
-                    <a href="forgot-password.html" style="font-size: 13px; color: #777;">Mot de passe oublié ?</a>
-                </div>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Adresse Email" required>
+                    </div>
 
-                <button type="submit">Se connecter</button>
+                    <div class="input-group">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" id="password" placeholder="Mot de passe" required>
+                    </div>
 
-                <p style="margin-top: 25px; font-size: 14px; color: #ccc;">
-                    Pas encore de compte ? <a href="register.html" style="display: inline; color: var(--primary-color);">Créer un compte</a>
+                    <div style="text-align: right; margin-bottom: 25px;">
+                        <a href="forgot-password.html" style="font-size: 12px; color: var(--vma-gold); text-decoration: none;">Mot de passe oublié ?</a>
+                    </div>
+
+                    <button type="submit" class="vma-btn-primary" style="width: 100%;">SE CONNECTER</button>
+                </form>
+
+                <p style="text-align: center; margin-top: 30px; font-size: 13px; color: #444;">
+                    Pas encore de compte ? <a href="register.html" style="color: var(--vma-gold); font-weight: 700; text-decoration: none;">Créer un compte Elite</a>
                 </p>
-            </form>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <script>
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            // Generate a fake JWT token for investor demo
-            const fakeToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + btoa(JSON.stringify({sub: email, role: 'buyer'})) + ".signature";
-
-            localStorage.setItem('vma_token', fakeToken);
-            localStorage.setItem('vma_logged_in', 'true');
-
-            location.href = 'gateway.html';
-        }
-    </script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

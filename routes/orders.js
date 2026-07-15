@@ -11,11 +11,19 @@ const { sendPushNotification } = require('../services/notificationService');
 router.post('/', auth, async (req, res) => {
     try {
         const { items, totalAmount, shippingAddress } = req.body;
+
+        // Génération automatique du numéro de suivi commande (Tracking Number)
+        const date = new Date();
+        const year = date.getFullYear().toString().slice(-2);
+        const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
+        const trackingNumber = `VMA-TRK-${year}${randomStr}`;
+
         const newOrder = new Order({
             customer: req.user.id,
             items,
             totalAmount,
-            shippingAddress
+            shippingAddress,
+            trackingNumber
         });
         const order = await newOrder.save();
 

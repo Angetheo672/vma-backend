@@ -34,24 +34,38 @@ app.use((req, res, next) => {
 
 // DATABASE CONNECTION
 const connectDB = require('./config/db');
-const Product = require('./models/Product'); // Import du modèle pour la migration
+const Product = require('./models/Product');
+const Order = require('./models/Order');
 
 connectDB().then(async () => {
-    console.log("Vérification des numéros de suivi produits...");
+    console.log("Vérification des numéros de suivi (Produits & Commandes)...");
     try {
+        // Migration Produits
         const productsToUpdate = await Product.find({ vmaId: { $exists: false } });
         if (productsToUpdate.length > 0) {
-            console.log(`${productsToUpdate.length} produits sans ID trouvés. Génération en cours...`);
+            console.log(`${productsToUpdate.length} produits sans ID trouvés. Génération...`);
             for (let product of productsToUpdate) {
                 const timestamp = Date.now().toString().slice(-4);
                 const randomStr = Math.random().toString(36).substring(2, 5).toUpperCase();
                 product.vmaId = `VMA-PRD-${timestamp}-${randomStr}`;
                 await product.save();
             }
-            console.log("Tous les produits ont maintenant un numéro de suivi !");
         }
+
+        // Migration Commandes
+        const ordersToUpdate = await Order.find({ trackingNumber: { $exists: false } });
+        if (ordersToUpdate.length > 0) {
+            console.log(`${ordersToUpdate.length} commandes sans tracking trouvées. Génération...`);
+            for (let order of ordersToUpdate) {
+                const year = new Date().getFullYear().toString().slice(-2);
+                const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
+                order.trackingNumber = `VMA-TRK-${year}${randomStr}`;
+                await order.save();
+            }
+        }
+        console.log("Système de suivi à jour ✅");
     } catch (err) {
-        console.error("Erreur lors de la migration des IDs :", err);
+        console.error("Erreur migration Suivi :", err);
     }
 });
 

@@ -20,40 +20,10 @@
         </div>
     </header>
 
-    <main class="scroll-container" style="padding: 70px 16px 20px;">
-        <!-- Order Card 1 -->
-        <div class="order-card-buyer">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                <span style="font-size: 11px; color: var(--text-muted);">08 Juil 2026</span>
-                <span class="status-chip delivered">LIVRÉ</span>
-            </div>
-            <div style="display: flex; gap: 12px; margin-bottom: 15px;">
-                <img src="images/15.jpg" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
-                <div style="flex: 1;">
-                    <h4 style="font-size: 13px;">iPhone 15 Pro Max Titanium</h4>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--vma-gold); margin-top: 4px;">785.000 F</div>
-                </div>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-order-alt">Facture PDF</button>
-                <button class="btn-order" onclick="location.href='tracking.html'">Suivre</button>
-            </div>
-        </div>
-
-        <!-- Order Card 2 -->
-        <div class="order-card-buyer">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                <span style="font-size: 11px; color: var(--text-muted);">05 Juil 2026</span>
-                <span class="status-chip shipping">EN TRANSIT</span>
-            </div>
-            <div style="display: flex; gap: 12px; margin-bottom: 15px;">
-                <img src="images/montrerolex.jpg" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
-                <div style="flex: 1;">
-                    <h4 style="font-size: 13px;">Rolex Submariner Gold</h4>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--vma-gold); margin-top: 4px;">12.500 F</div>
-                </div>
-            </div>
-            <button class="btn-order" style="width: 100%;" onclick="location.href='tracking.html'">Détails Tracking</button>
+    <main class="scroll-container" style="padding: 70px 16px 20px;" id="ordersList">
+        <div style="text-align: center; padding: 50px;">
+            <i class="fa fa-spinner fa-spin" style="color: var(--vma-gold); font-size: 30px;"></i>
+            <p style="margin-top: 10px; color: #555;">Chargement de vos commandes d'élite...</p>
         </div>
     </main>
 
@@ -65,5 +35,52 @@
         .btn-order { background: var(--vma-gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-size: 11px; font-weight: 700; flex: 1; font-family: inherit; }
         .btn-order-alt { background: #222; color: #fff; border: 1px solid #333; padding: 10px 15px; border-radius: 8px; font-size: 11px; font-weight: 700; flex: 1; font-family: inherit; }
     </style>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const list = document.getElementById('ordersList');
+
+            try {
+                const orders = await API.getOrders();
+
+                if (orders.length === 0) {
+                    list.innerHTML = `<div style="text-align:center; padding-top:100px; color:#555;">Aucune commande pour le moment.</div>`;
+                    return;
+                }
+
+                list.innerHTML = orders.map(order => {
+                    const statusClass = order.orderStatus === 'delivered' ? 'delivered' : 'shipping';
+                    const date = new Date(order.createdAt).toLocaleDateString();
+                    const trk = order.trackingNumber || "VMA-TBC";
+
+                    return `
+                        <div class="order-card-buyer">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <span style="font-size: 11px; color: var(--text-muted);">${date}</span>
+                                <span class="status-chip ${statusClass}">${order.orderStatus.toUpperCase()}</span>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <span style="font-size: 10px; color: var(--vma-gold); font-weight: 700; background: #000; padding: 4px 8px; border-radius: 5px;">TRACKING: ${trk}</span>
+                            </div>
+                            <div style="display: flex; gap: 12px; margin-bottom: 15px;">
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 13px; color: #fff;">Commande #${order._id.slice(-6).toUpperCase()}</h4>
+                                    <div style="font-size: 12px; font-weight: 700; color: var(--vma-gold); margin-top: 4px;">${new Intl.NumberFormat('fr-FR').format(order.totalAmount)} F</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-order-alt" onclick="window.Android ? Android.showToast('Facture en préparation...') : alert('Facture en préparation...')">Facture</button>
+                                <button class="btn-order" onclick="location.href='tracking.html?trk=${trk}'">Suivre Colis</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                list.innerHTML = `<div style="text-align:center; padding-top:100px; color:red;">Erreur de chargement. Vérifiez votre connexion.</div>`;
+            }
+        });
+    </script>
 </body>
 </html>

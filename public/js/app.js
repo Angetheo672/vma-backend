@@ -5,8 +5,8 @@
 
 const VMA_DATA = {
     products: [],
-    favorites: JSON.parse(localStorage.getItem('vma_favorites')) || [],
-    cart: JSON.parse(localStorage.getItem('vma_cart')) || []
+    favorites: (JSON.parse(localStorage.getItem('vma_favorites')) || []).filter(i => i !== null),
+    cart: (JSON.parse(localStorage.getItem('vma_cart')) || []).filter(i => i !== null)
 };
 
 // --- OFFICIAL CONTACT CONFIG ---

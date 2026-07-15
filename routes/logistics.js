@@ -28,6 +28,23 @@ router.get('/track/:id', async (req, res) => {
             return res.json({ type: 'logistic', source: 'VMA Logistics', data: logistic });
         }
 
+        // 3. RECHERCHE DIRECTE DANS LES COMMANDES VMA
+        const Order = require('../models/Order');
+        const order = await Order.findOne({ trackingNumber: searchId });
+        if (order) {
+            return res.json({
+                type: 'order',
+                source: 'VMA Order Tracking',
+                data: {
+                    orderId: order._id,
+                    status: order.orderStatus,
+                    payment: order.paymentStatus,
+                    trackingNumber: order.trackingNumber,
+                    createdAt: order.createdAt
+                }
+            });
+        }
+
         // 3. RECHERCHE EXTERNE (FUTURE CONNEXION 17TRACK / AFTERSHIP)
         // Ici, nous préparons le pont vers les APIs mondiales
         // if (process.env.AFTERSHIP_API_KEY) { ... }

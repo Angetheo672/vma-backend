@@ -2,50 +2,66 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Inscription | Vision Market Africa</title>
-
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body>
-
-    <div class="login-container">
-        <div class="login-card">
-            <a href="index.html">
-                <img src="images/logo.jpeg" class="login-logo" alt="VMA Logo" onerror="this.src='https://via.placeholder.com/90?text=VMA'">
-            </a>
-            <h2>Créer un compte</h2>
-            <p>Rejoignez la plus grande plateforme de commerce en Afrique</p>
-
-            <form id="registerForm">
-                <div class="input-box">
-                    <i class="fa fa-user"></i>
-                    <input type="text" placeholder="Nom complet" required>
-                </div>
-                <div class="input-box">
-                    <i class="fa fa-envelope"></i>
-                    <input type="email" placeholder="Adresse Email" required>
-                </div>
-                <div class="input-box">
-                    <i class="fa fa-phone"></i>
-                    <input type="tel" placeholder="Numéro de téléphone" required>
-                </div>
-                <div class="input-box">
-                    <i class="fa fa-lock"></i>
-                    <input type="password" placeholder="Mot de passe" required>
+<body class="app-shell">
+    <main class="scroll-container" style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+        <div class="auth-container" style="width: 100%; max-width: 400px; padding: 20px;">
+            <div class="auth-card">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <img src="images/logo.jpeg" alt="VMA Logo" style="width: 70px; border-radius: 15px; border: 2px solid var(--vma-gold);">
+                    <h2 style="margin-top: 15px; font-weight: 800; letter-spacing: -1px;">REJOINDRE L'ELITE</h2>
+                    <p style="font-size: 13px; color: #666;">Commencez votre aventure import-export</p>
                 </div>
 
-                <button type="submit">S'inscrire</button>
+                <form id="registerForm">
+                    <div class="input-group">
+                        <i class="fa fa-user"></i>
+                        <input type="text" id="fullName" placeholder="Nom complet" required>
+                    </div>
 
-                <p style="margin-top: 25px; font-size: 14px; color: #ccc;">
-                    Déjà un compte ? <a href="login.html" style="display: inline; color: var(--primary-color);">Se connecter</a>
+                    <div class="input-group">
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Adresse Email" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa fa-phone"></i>
+                        <input type="tel" id="phone" placeholder="Numéro de téléphone" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa fa-briefcase"></i>
+                        <select id="role" required>
+                            <option value="buyer">Je suis un Acheteur / Importateur</option>
+                            <option value="supplier">Je suis un Fournisseur / Usine</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" id="password" placeholder="Mot de passe" required>
+                    </div>
+
+                    <p style="font-size: 11px; color: #555; margin-bottom: 20px;">
+                        En vous inscrivant, vous acceptez nos <a href="terms.html" style="color: var(--vma-gold);">Conditions Générales</a> et notre <a href="privacy.html" style="color: var(--vma-gold);">Politique de Confidentialité</a>.
+                    </p>
+
+                    <button type="submit" class="vma-btn-primary" style="width: 100%;">CRÉER MON COMPTE</button>
+                </form>
+
+                <p style="text-align: center; margin-top: 30px; font-size: 13px; color: #444;">
+                    Déjà membre ? <a href="login.html" style="color: var(--vma-gold); font-weight: 700; text-decoration: none;">Se connecter</a>
                 </p>
-            </form>
+            </div>
         </div>
-    </div>
+    </main>
 
+    <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
 </body>
 </html>

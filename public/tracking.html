@@ -93,14 +93,56 @@
         .timeline-item .desc { font-size: 12px; color: var(--text-secondary); }
     </style>
 
+    <script src="js/api.js"></script>
     <script>
-        function trackOrder() {
-            const input = document.getElementById('trackInput').value;
+        async function trackOrder() {
+            const input = document.getElementById('trackInput').value.trim().toUpperCase();
             if(input.length < 5) {
                 alert("Veuillez entrer un numéro de suivi valide.");
                 return;
             }
-            document.getElementById('trackResult').style.display = 'block';
+
+            const resultArea = document.getElementById('trackResult');
+            resultArea.style.display = 'none';
+
+            try {
+                // Appel à l'API de tracking globale
+                const res = await API.request(`/logistics/track/${input}`);
+
+                if (res.data) {
+                    resultArea.style.display = 'block';
+                    const data = res.data;
+
+                    // On adapte l'affichage selon le type (Produit ou Commande)
+                    const statusTitle = document.querySelector('#trackResult span[style*="font-size: 16px"]');
+                    const originDest = document.querySelectorAll('#trackResult div[style*="font-size: 13px"]');
+                    const estimation = document.querySelector('#trackResult div[style*="font-size: 14px"]');
+                    const timeline = document.querySelector('.timeline');
+
+                    if (res.type === 'order') {
+                        statusTitle.innerText = data.status.toUpperCase();
+                        originDest[0].innerText = "Entrepôt VMA (Chine/Turquie)";
+                        originDest[1].innerText = "Douala/Abidjan (Destination)";
+                        estimation.innerText = "Calcul en cours selon le mode de transport...";
+
+                        timeline.innerHTML = `
+                            <div class="timeline-item active">
+                                <div class="dot"></div>
+                                <div class="time">${new Date(data.createdAt).toLocaleDateString()}</div>
+                                <div class="desc">Commande enregistrée et numéro de suivi ${data.trackingNumber} attribué.</div>
+                            </div>
+                        `;
+                    } else if (res.type === 'product') {
+                        statusTitle.innerText = data.status;
+                        originDest[0].innerText = "Usine Source";
+                        originDest[1].innerText = "Marketplace VMA";
+                        estimation.innerText = "Disponible immédiatement";
+                        timeline.innerHTML = `<div class="timeline-item active"><div class="dot"></div><div class="desc">Produit authentifié sous la référence ${data.vmaId}</div></div>`;
+                    }
+                }
+            } catch (err) {
+                alert("Numéro introuvable ou erreur de connexion.");
+            }
         }
     </script>
 </body>

@@ -111,9 +111,13 @@
         }
 
         function addToCart() {
+            if (!currentProduct) {
+                if(window.Android) Android.showToast("Chargement du produit...");
+                return;
+            }
             let cart = JSON.parse(localStorage.getItem('vma_cart')) || [];
             cart.push(currentProduct);
-            localStorage.setItem('vma_cart', JSON.stringify(cart));
+            localStorage.setItem('vma_cart', JSON.stringify(cart.filter(i => i !== null)));
             if(window.Android) Android.showToast("Ajouté au panier !");
             else alert("Ajouté au panier !");
         }

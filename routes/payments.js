@@ -57,11 +57,44 @@ router.post('/initiate', auth, async (req, res) => {
 
         console.log(`[PAYMENT SIM] Initiated: ${transactionId} for ${amount} XAF`);
 
+        // Fonction pour envoyer le reçu (Utilisée en SIM et en RÉEL)
+        const sendReceipt = async (orderId, amount, transactionId) => {
+            const Order = require('../models/Order');
+            const User = require('../models/User');
+            const { sendEmail } = require('../services/emailService');
+
+            try {
+                const order = await Order.findById(orderId);
+                const user = await User.findById(order.customer);
+                if (user) {
+                    const subject = `REÇU DE PAIEMENT VMA ELITE - #${transactionId.slice(-6)}`;
+                    const html = `
+                        <div style="font-family: Arial, sans-serif; background: #000; color: #fff; padding: 20px; border-radius: 15px;">
+                            <h1 style="color: #FFD700;">Vision Market Africa</h1>
+                            <h2>REÇU DE PAIEMENT OFFICIEL</h2>
+                            <p>Merci <strong>${user.firstName}</strong> pour votre confiance.</p>
+                            <div style="background: #111; padding: 15px; border-radius: 10px; border: 1px solid #FFD700;">
+                                <p><strong>Transaction ID:</strong> ${transactionId}</p>
+                                <p><strong>Montant Payé:</strong> ${amount} XAF</p>
+                                <p><strong>Statut:</strong> Confirmé ✅</p>
+                                <p><strong>Commande:</strong> #${orderId.toString().slice(-6).toUpperCase()}</p>
+                            </div>
+                            <p style="font-size: 12px; color: #888; margin-top: 20px;">VMA Elite v3.0 - Votre passerelle vers le commerce mondial.</p>
+                        </div>
+                    `;
+                    await sendEmail(user.email, subject, html);
+                }
+            } catch (e) { console.error("Receipt error:", e.message); }
+        };
+
         setTimeout(async () => {
             try {
                 await Payment.findOneAndUpdate({ transactionId: transactionId + "-SIM" }, { status: 'completed' });
                 await Order.findByIdAndUpdate(orderId, { paymentStatus: 'paid', orderStatus: 'processing' });
                 console.log(`[PAYMENT SIM] ✅ Success: ${transactionId}`);
+
+                // Envoi du reçu automatique
+                await sendReceipt(orderId, amount, transactionId + "-SIM");
             } catch (err) { console.log("Sim Error"); }
         }, 5000);
 
