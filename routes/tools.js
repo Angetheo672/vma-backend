@@ -7,15 +7,30 @@ const auth = require('../middleware/auth');
 
 // @route   POST api/tools/analyze-link
 router.post('/analyze-link', async (req, res) => {
-    const { url } = req.body;
+    const { url, query } = req.body;
+    const searchTerm = query || url;
+
     try {
-        if (url.includes("1688") || url.includes("alibaba")) {
-            const externalData = await aggregator.fetchFromAlibaba(url);
-            if (externalData && externalData.length > 0) return res.json(externalData[0]);
-        }
-        res.json({ name: "Produit Importé", price: 15000, source: "1688" });
+        // Lancement d'une recherche globale massive multi-plateforme
+        const [alibaba, amazon, aliexpress, pinduoduo, ebay, walmart, etsy, temu] = await Promise.all([
+            aggregator.fetchFromAlibaba(searchTerm),
+            aggregator.fetchFromAmazon(searchTerm),
+            aggregator.fetchFromAliExpress(searchTerm),
+            aggregator.fetchFromPinduoduo(searchTerm),
+            aggregator.fetchFromEbay(searchTerm),
+            aggregator.fetchFromWalmart(searchTerm),
+            aggregator.fetchFromEtsy(searchTerm),
+            aggregator.fetchFromTemu(searchTerm)
+        ]);
+
+        const allResults = [
+            ...alibaba, ...amazon, ...aliexpress, ...pinduoduo,
+            ...ebay, ...walmart, ...etsy, ...temu
+        ];
+        res.json(allResults);
     } catch (err) {
-        res.status(500).json({ msg: "Erreur lors de l'analyse" });
+        console.error("Global Search Error:", err);
+        res.status(500).json({ msg: "Erreur lors de la recherche globale" });
     }
 });
 

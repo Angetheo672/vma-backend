@@ -87,27 +87,48 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            if (!productId) return history.back();
-            await loadProduct();
+            const urlName = urlParams.get('name');
+            const urlPrice = urlParams.get('price');
+            const urlImg = urlParams.get('img');
+            const urlSource = urlParams.get('source');
+
+            if (productId && productId !== 'global') {
+                await loadProduct();
+            } else if (urlName) {
+                // Display Global Product from URL parameters
+                currentProduct = {
+                    name: decodeURIComponent(urlName),
+                    price: parseInt(urlPrice),
+                    image: decodeURIComponent(urlImg),
+                    source: urlSource,
+                    description: `Ce produit provient de ${urlSource}. VMA facilite votre achat et l'expédition vers l'Afrique.`
+                };
+                displayProduct(currentProduct);
+            } else {
+                history.back();
+            }
         });
 
         async function loadProduct() {
             try {
                 const product = await API.getProductById(productId);
                 currentProduct = product;
-
-                document.getElementById('productName').innerText = product.name;
-                document.getElementById('productPrice').innerText = formatPrice(product.price) + ' F';
-                document.getElementById('productDesc').innerText = product.description;
-                document.getElementById('mainImage').src = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/400';
-                document.getElementById('vmaIdBadge').innerText = 'RÉF: ' + (product.vmaId || 'VMA-PRD-TBC');
-
-                if (product.isVerified) document.getElementById('verifiedBadge').style.display = 'inline-flex';
-                if (product.supplier) document.getElementById('supplierName').innerText = product.supplier.companyName || product.supplier.firstName;
-
+                displayProduct(product);
             } catch (err) {
                 console.error(err);
             }
+        }
+
+        function displayProduct(product) {
+            document.getElementById('productName').innerText = product.name;
+            document.getElementById('productPrice').innerText = formatPrice(product.price) + ' F';
+            document.getElementById('productDesc').innerText = product.description;
+            document.getElementById('mainImage').src = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/400';
+            document.getElementById('vmaIdBadge').innerText = 'RÉF: ' + (product.vmaId || 'VMA-GLOBAL');
+
+            if (product.isVerified) document.getElementById('verifiedBadge').style.display = 'inline-flex';
+            if (product.supplier) document.getElementById('supplierName').innerText = product.supplier.companyName || product.supplier.firstName;
+            else if (product.source) document.getElementById('supplierName').innerText = product.source + " Verified Partner";
         }
 
         function addToCart() {

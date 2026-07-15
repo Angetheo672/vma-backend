@@ -57,35 +57,53 @@
         }
 
         async function performSearch(query) {
+            const grid = document.getElementById('searchResults');
+            const suggestions = document.getElementById('suggestions');
+
             try {
+                // Loader visual
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                    <i class="fa fa-spinner fa-spin" style="color: var(--vma-gold); font-size: 30px;"></i>
+                    <p style="margin-top: 15px; color: #555;">Recherche mondiale sur Alibaba, 1688, Amazon...</p>
+                </div>`;
+
                 // 1. Search Local Products
                 const localProducts = await API.getProducts();
                 let results = localProducts.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
 
-                // 2. Innovation: If no local results, fetch from Global Chain (Alibaba/1688)
+                // 2. GLOBAL AGGREGATION (Alibaba, 1688, Amazon, etc.)
+                const globalResults = await API.analyzeLink(query); // Utilise la nouvelle route multi-plateforme
+                results = [...results, ...globalResults];
+
                 if (results.length === 0) {
-                    const globalData = await API.analyzeLink(query);
-                    results = Array.isArray(globalData) ? globalData : [globalData];
+                    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #666; padding: 50px;">Aucun résultat trouvé pour "${query}"</p>`;
+                    return;
                 }
 
-                const grid = document.getElementById('searchResults');
-                grid.innerHTML = results.map(p => `
-                    <div class="modern-card" onclick="location.href='product.html?id=${p._id || 'global'}'">
-                        <div class="card-image-wrap">
-                            <img src="${(p.images && p.images[0]) || p.image}" alt="${p.name}">
-                        </div>
-                        <div class="card-body">
-                            <h3 class="product-name">${p.name}</h3>
-                            <div class="price-row">
-                                <span class="current-price">${formatPrice(p.price)} F</span>
+                grid.innerHTML = results.map(p => {
+                    const source = p.source || 'VMA';
+                    const sourceColor = source === '1688' ? '#ff6600' : (source === 'Amazon' ? '#232f3e' : 'var(--vma-gold)');
+
+                    return `
+                        <div class="modern-card" onclick="location.href='product.html?id=${p._id || 'global'}&name=${encodeURIComponent(p.name)}&price=${p.price}&img=${encodeURIComponent(p.image)}&source=${source}'">
+                            <div class="card-image-wrap">
+                                <img src="${(p.images && p.images[0]) || p.image || 'https://via.placeholder.com/300'}" alt="${p.name}">
+                                <div class="source-tag" style="background: ${sourceColor}">${source}</div>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="product-name">${p.name}</h3>
+                                <div class="price-row">
+                                    <span class="current-price">${formatPrice(p.price)} F</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
-                document.getElementById('suggestions').style.display = results.length > 0 ? 'none' : 'block';
+                suggestions.style.display = 'none';
             } catch (err) {
                 console.error(err);
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red; padding: 50px;">Erreur lors de la recherche mondiale.</p>`;
             }
         }
 
