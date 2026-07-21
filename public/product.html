@@ -39,6 +39,18 @@
                 <i class="fa fa-check-circle"></i> Vendeur Vérifié
             </div>
 
+            <!-- PRODUCT SPECS -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
+                <div style="background: #0a0a0a; padding: 10px; border-radius: 10px; border: 1px solid #1a1a1a;">
+                    <div style="font-size: 10px; color: #555; text-transform: uppercase;">Catégorie</div>
+                    <div id="productCat" style="font-size: 12px; font-weight: 600;">...</div>
+                </div>
+                <div style="background: #0a0a0a; padding: 10px; border-radius: 10px; border: 1px solid #1a1a1a;">
+                    <div style="font-size: 10px; color: #555; text-transform: uppercase;">Stock</div>
+                    <div id="productStock" style="font-size: 12px; font-weight: 600;">...</div>
+                </div>
+            </div>
+
             <div style="margin: 20px 0; padding: 15px; background: #111; border-radius: 15px;">
                 <h3 style="font-size: 14px; margin-bottom: 10px;">Description</h3>
                 <p id="productDesc" style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">...</p>
@@ -123,7 +135,23 @@
             document.getElementById('productName').innerText = product.name;
             document.getElementById('productPrice').innerText = formatPrice(product.price) + ' F';
             document.getElementById('productDesc').innerText = product.description;
-            document.getElementById('mainImage').src = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/400';
+            document.getElementById('productCat').innerText = product.category || 'Général';
+            document.getElementById('productStock').innerText = product.stock !== undefined ? product.stock + ' unités' : 'Sur commande';
+
+            const images = product.images && product.images.length > 0 ? product.images : [product.image || 'https://via.placeholder.com/400'];
+            document.getElementById('mainImage').src = images[0];
+            document.getElementById('imageCounter').innerText = `1/${images.length}`;
+
+            // Add simple tap to switch image logic if multiple images exist
+            if (images.length > 1) {
+                let currentImgIdx = 0;
+                document.getElementById('productGallery').onclick = () => {
+                    currentImgIdx = (currentImgIdx + 1) % images.length;
+                    document.getElementById('mainImage').src = images[currentImgIdx];
+                    document.getElementById('imageCounter').innerText = `${currentImgIdx + 1}/${images.length}`;
+                };
+            }
+
             document.getElementById('vmaIdBadge').innerText = 'RÉF: ' + (product.vmaId || 'VMA-GLOBAL');
 
             if (product.isVerified) document.getElementById('verifiedBadge').style.display = 'inline-flex';

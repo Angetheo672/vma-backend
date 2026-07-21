@@ -16,7 +16,7 @@
             flex-direction: column;
             gap: 15px;
             background: #000;
-            padding-bottom: 120px; /* Space for input */
+            padding-bottom: 120px;
         }
         .msg-bot, .msg-user {
             max-width: 85%;
@@ -80,38 +80,37 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
         }
-        .send-btn:active { transform: scale(0.9); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Typing Indicator */
         .typing { font-style: italic; color: #555; font-size: 12px; margin-left: 5px; }
     </style>
 </head>
 <body class="app-shell">
     <header class="app-header" style="height: 65px;">
-        <div style="display: flex; align-items: center; gap: 15px; width: 100%;">
-            <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold); font-size: 20px;"></i>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 38px; height: 38px; background: #ff4d94; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--vma-gold);">
-                    <i class="fa fa-robot" style="color: #fff;"></i>
-                </div>
-                <div>
-                    <div style="font-size: 15px; font-weight: 800; color: #fff;">EMMA IA ELITE</div>
-                    <div style="font-size: 10px; color: var(--vma-green); font-weight: 700;"><i class="fa fa-circle" style="font-size: 8px;"></i> ANALYSE TEMPS RÉEL</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <i class="fa fa-chevron-left" onclick="history.back()" style="color: var(--vma-gold); font-size: 20px;"></i>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 38px; height: 38px; background: #ff4d94; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--vma-gold);">
+                        <i class="fa fa-robot" style="color: #fff;"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 15px; font-weight: 800; color: #fff;">EMMA IA ELITE</div>
+                        <div style="font-size: 10px; color: var(--vma-green); font-weight: 700;">ACTIVE</div>
+                    </div>
                 </div>
             </div>
+            <i class="fa-solid fa-broom" onclick="clearChat()" style="color: #444; font-size: 18px; padding: 10px;"></i>
         </div>
     </header>
 
     <main class="chat-body" id="chatContainer">
-        <div class="msg-bot">Bonjour ! Je suis Emma, Directrice du Sourcing VMA. Je suis connectée aux bases de données de Guangzhou et Istanbul. Que voulez-vous importer aujourd'hui ?</div>
+        <div class="msg-bot">Bonjour ! Je suis Emma. Comment puis-je vous aider dans votre business aujourd'hui ? Je peux analyser vos questions de sourcing, logistique ou stratégie globale.</div>
     </main>
 
     <div class="input-area">
-        <input type="text" id="chatInput" class="chat-input" placeholder="Parlez-moi de votre projet d'import..." autocomplete="off">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Écrivez votre question ici..." autocomplete="off">
         <button id="sendBtn" class="send-btn">
             <i class="fa fa-paper-plane"></i>
         </button>
@@ -123,8 +122,25 @@
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
 
-        // Système de mémoire illimitée (Historique local)
-        let chatHistory = [];
+        let chatHistory = JSON.parse(localStorage.getItem('vma_chat_history') || '[]');
+
+        function loadHistory() {
+            chatHistory.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = msg.role === 'user' ? 'msg-user' : 'msg-bot';
+                div.innerText = msg.content;
+                chatContainer.appendChild(div);
+            });
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function clearChat() {
+            if(confirm("Effacer la conversation ?")) {
+                chatHistory = [];
+                localStorage.setItem('vma_chat_history', '[]');
+                location.reload();
+            }
+        }
 
         function appendMessage(role, content) {
             const msg = document.createElement('div');
@@ -132,15 +148,14 @@
             msg.innerText = content;
             chatContainer.appendChild(msg);
 
-            // Auto-scroll à chaque nouveau message
             chatContainer.scrollTo({
                 top: chatContainer.scrollHeight,
                 behavior: 'smooth'
             });
 
-            // On garde les 10 derniers messages en mémoire pour l'IA
             if (role !== 'system') {
                 chatHistory.push({ role, content });
+                localStorage.setItem('vma_chat_history', JSON.stringify(chatHistory.slice(-20)));
             }
         }
 
@@ -151,38 +166,35 @@
             appendMessage('user', query);
             chatInput.value = '';
 
-            // Indicateur de réflexion
             const typing = document.createElement('div');
             typing.className = 'msg-bot typing';
             typing.id = 'typingIndicator';
-            typing.innerText = "Emma analyse le marché...";
+            typing.innerText = "Emma analyse votre demande...";
             chatContainer.appendChild(typing);
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                // On envoie l'historique complet pour une conversation "Continue"
                 const response = await API.request('/ai/chat', {
                     method: 'POST',
                     body: JSON.stringify({
                         query: query,
-                        history: chatHistory.slice(-10) // Contexte glissant
+                        history: chatHistory.slice(-10)
                     })
                 });
 
-                document.getElementById('typingIndicator').remove();
+                if (document.getElementById('typingIndicator')) document.getElementById('typingIndicator').remove();
                 appendMessage('bot', response.reply);
 
             } catch (err) {
                 if (document.getElementById('typingIndicator')) document.getElementById('typingIndicator').remove();
-                appendMessage('bot', "Ma connexion aux usines chinoises est instable. Mais ne baissez pas les bras, réessayez dans un instant.");
+                appendMessage('bot', "Je synchronise mes données de sourcing. Reposons votre question dans un instant.");
             }
         }
 
         sendBtn.onclick = sendMessage;
         chatInput.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
 
-        // Focus auto sur l'input
-        window.onload = () => chatInput.focus();
+        window.onload = loadHistory;
     </script>
 </body>
 </html>
