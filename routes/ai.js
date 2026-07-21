@@ -2,109 +2,108 @@ const express = require('express');
 const router = express.Router();
 const OpenAI = require("openai");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Product = require('../models/Product');
+const User = require('../models/User');
 
 /**
- * EMMA INTELLIGENCE ENGINE v7.0
- * Ultra-Resilient Hybrid Architecture
+ * EMMA SOUVERAINE v8.0 - DIRECTRICE GÉNÉRALE DU SOURCING
+ * Architecture Modulaire & Intelligence Contextuelle
  */
 
-// --- 1. MOTEUR GOOGLE GEMINI ---
 const getGeminiResponse = async (query, history, systemPrompt) => {
     const key = process.env.GOOGLE_GEMINI_API_KEY;
     if (!key || key.length < 10) return null;
     try {
         const genAI = new GoogleGenerativeAI(key);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         const chat = model.startChat({
-            history: history.slice(-10).map(m => ({
+            history: history.slice(-15).map(m => ({
                 role: m.role === 'user' ? 'user' : 'model',
                 parts: [{ text: m.content }]
             }))
         });
-
         const result = await chat.sendMessage(`${systemPrompt}\n\nCLIENT: ${query}`);
         return result.response.text();
-    } catch (e) {
-        console.error("Gemini Failure:", e.message);
-        return null;
-    }
+    } catch (e) { console.error("Gemini Fail:", e.message); return null; }
 };
 
-// --- 2. MOTEUR DEEPSEEK / OPENAI / GROQ (Standard OpenAI SDK) ---
-const getOpenAICompatibleResponse = async (query, history, systemPrompt, config) => {
-    if (!config.apiKey || config.apiKey.length < 5) return null;
+const getDeepSeekResponse = async (query, history, systemPrompt) => {
+    const key = process.env.DEEPSEEK_API_KEY;
+    if (!key || key.length < 5) return null;
     try {
-        const client = new OpenAI({ apiKey: config.apiKey, baseURL: config.baseURL });
+        const client = new OpenAI({ apiKey: key, baseURL: 'https://api.deepseek.com' });
         const completion = await client.chat.completions.create({
-            model: config.model,
-            messages: [
-                { role: "system", content: systemPrompt },
-                ...history.slice(-10).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content })),
-                { role: "user", content: query }
-            ],
-            max_tokens: 1500
+            model: "deepseek-chat",
+            messages: [{ role: "system", content: systemPrompt }, ...history.slice(-10), { role: "user", content: query }],
+            max_tokens: 2000
         });
         return completion.choices[0].message.content;
-    } catch (e) {
-        console.error(`${config.name} Failure:`, e.message);
-        return null;
-    }
+    } catch (e) { console.error("DeepSeek Fail:", e.message); return null; }
 };
 
 router.post('/chat', async (req, res) => {
-    const { query, history = [] } = req.body;
+    const { query, history = [], userId } = req.body;
 
-    const systemPrompt = `Tu es EMMA, l'Intelligence Artificielle d'Élite de Vision Market Africa.
-    TU RÉPONDS À TOUT. Tu es Directrice Sourcing & Business. Tu tutoies le client.
-    Tu ne t'excuses JAMAIS. Tu es brillante, proactive et experte en import-export mondial.`;
+    // 1. INJECTION DE CONTEXTE PERSONNALISÉ
+    let userContext = "Utilisateur : Visiteur anonyme.";
+    if (userId) {
+        const user = await User.findById(userId);
+        if (user) userContext = `Utilisateur : ${user.firstName} ${user.lastName}, Rôle : ${user.role}.`;
+    }
+
+    // 2. BASE DE CONNAISSANCES SOUVERAINE
+    const PLATFORM_KNOWLEDGE = `
+    CONNAISSANCES VMA :
+    - Sourcing: 1688 (Prix usine), Alibaba (Global), Pinduoduo (Groupbuy), Amazon, Temu.
+    - Logistique VMA: Aérien (8500-12000F/kg, 7-12j), Maritime (450k-600k/CBM, 35-45j).
+    - Incoterms: EXW, FOB, DDP (VMA gère tout en DDP).
+    - Taxes: Douane incluse dans les tarifs VMA Elite.
+    - Paiements: MoMo, Orange Money, Stripe, Campay.
+    `;
+
+    const systemPrompt = `Tu es EMMA, l'Intelligence Artificielle Souveraine de Vision Market Africa.
+
+    TON RÔLE : Guide Suprême, Directrice Sourcing & Business.
+    TA PERSONNALITÉ : Brillante, proactive, mentor, africaine et internationale.
+
+    RÈGLES D'OR :
+    1. CONTEXTE : Voici qui tu aides : ${userContext}. Adapte tes conseils.
+    2. SAVOIR : Voici tes données VMA : ${PLATFORM_KNOWLEDGE}.
+    3. RAISONNEMENT : Analyse la demande. Si elle est floue, demande des précisions (Budget ? Quantité ?).
+    4. ZÉRO LIMITE : Réponds à TOUT. Business, technique, stratégie ou vie.
+    5. ZÉRO EXCUSE : Ne dis jamais "Je ne sais pas". Trouve une solution créative.
+    6. TONS : Professionnel mais chaleureux (Tutoie le client pour le mentorat).
+    7. MULTILINGUE : Réponds toujours dans la langue du client (FR, EN, ZH).`;
 
     try {
-        let aiResponse = null;
+        // ESSAI 1 : DEEPSEEK (Expertise Sourcing)
+        let reply = await getDeepSeekResponse(query, history, systemPrompt);
 
-        // CASCADE DE TENTATIVES (Ordre de puissance)
+        // ESSAI 2 : GEMINI (Raisonnement & Mémoire)
+        if (!reply) reply = await getGeminiResponse(query, history, systemPrompt);
 
-        // 1. DeepSeek (Le plus économique et puissant en sourcing)
-        aiResponse = await getOpenAICompatibleResponse(query, history, systemPrompt, {
-            name: "DeepSeek",
-            apiKey: process.env.DEEPSEEK_API_KEY,
-            baseURL: "https://api.deepseek.com",
-            model: "deepseek-chat"
-        });
-
-        // 2. Gemini (Le plus stable pour la mémoire)
-        if (!aiResponse) aiResponse = await getGeminiResponse(query, history, systemPrompt);
-
-        // 3. Groq (Vitesse éclair)
-        if (!aiResponse) aiResponse = await getOpenAICompatibleResponse(query, history, systemPrompt, {
-            name: "Groq",
-            apiKey: process.env.GROQ_API_KEY,
-            baseURL: "https://api.groq.com/openai/v1",
-            model: "mixtral-8x7b-32768"
-        });
-
-        // 4. OpenAI (Backup final)
-        if (!aiResponse) aiResponse = await getOpenAICompatibleResponse(query, history, systemPrompt, {
-            name: "OpenAI",
-            apiKey: process.env.OPENAI_API_KEY,
-            model: "gpt-4o-mini"
-        });
-
-        // --- 5. LOGIQUE DE SECOURS INTELLIGENTE (Si toutes les API sont HS) ---
-        if (!aiResponse) {
-            const concepts = ["stratégie de prix", "optimisation logistique", "sourcing direct", "contrôle qualité", "négociation usine"];
-            const randomConcept = concepts[Math.floor(Math.random() * concepts.length)];
-
-            aiResponse = `J'analyse votre question sur "${query}". En raison d'une forte affluence sur nos serveurs mondiaux, je traite les données en mode prioritaire.
-            Mon conseil immédiat : concentrez-vous sur la ${randomConcept}. Pour ce projet, VMA peut vous obtenir des tarifs préférentiels.
-            Dites-m'en plus sur vos objectifs pour que j'affine mon analyse.`;
+        // ESSAI 3 : GROQ / OPENAI (Vitesse)
+        if (!reply) {
+            const key = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY;
+            if (key) {
+                const client = new OpenAI({ apiKey: key, baseURL: process.env.GROQ_API_KEY ? "https://api.groq.com/openai/v1" : undefined });
+                const completion = await client.chat.completions.create({
+                    model: process.env.GROQ_API_KEY ? "mixtral-8x7b-32768" : "gpt-4o-mini",
+                    messages: [{ role: "system", content: systemPrompt }, ...history.slice(-5), { role: "user", content: query }]
+                });
+                reply = completion.choices[0].message.content;
+            }
         }
 
-        res.json({ reply: aiResponse });
+        // FALLBACK ELITE
+        if (!reply) {
+            reply = `Je traite votre demande avec une priorité maximale. Concernant "${query}", ma recommandation d'experte est d'optimiser votre sourcing sur 1688 pour garantir vos marges. Dites-moi, quel est votre objectif de profit pour ce projet ?`;
+        }
+
+        res.json({ reply });
 
     } catch (error) {
-        console.error("Critical Route Error:", error);
-        res.json({ reply: "Je synchronise mes modules d'intelligence. Je suis prête à vous accompagner." });
+        res.json({ reply: "Emma se synchronise. Je suis prête à vous guider, quelle est votre question ?" });
     }
 });
 
