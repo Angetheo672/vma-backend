@@ -8,6 +8,12 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     phone: { type: String, required: true },
     role: { type: String, enum: ['buyer', 'supplier', 'logistics', 'admin'], default: 'buyer' },
+    isSuspended: { type: Boolean, default: false },
+    stats: {
+        totalSpent: { type: Number, default: 0 },
+        totalOrders: { type: Number, default: 0 },
+        sellerRating: { type: Number, default: 5.0 }
+    },
 
     // Supplier Specific
     companyName: String,

@@ -90,11 +90,17 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
             console.error("AI Vision Error:", e.message);
         }
 
-        // 2. Fetch results from Global Platforms
-        const [alibabaResults, amazonResults, aliexpressResults] = await Promise.all([
+        // 2. Fetch results from Global Platforms + LOCAL DB
+        const [alibabaResults, amazonResults, aliexpressResults, localResults] = await Promise.all([
             aggregator.fetchFromAlibaba(keywords),
             aggregator.fetchFromAmazon(keywords),
-            aggregator.fetchFromAliExpress(keywords)
+            aggregator.fetchFromAliExpress(keywords),
+            require('../models/Product').find({
+                $or: [
+                    { name: { $regex: keywords.split(' ')[0], $options: 'i' } },
+                    { category: { $regex: keywords.split(' ')[0], $options: 'i' } }
+                ]
+            }).limit(5)
         ]);
 
         // 3. Construct Google Search Image Link (Deep Search)
@@ -117,10 +123,19 @@ router.post('/visual-search', upload.single('image'), async (req, res) => {
         };
 
         const platformResults = [
+            { name: "VMA Marketplace (Local)", results: localResults.map(p => ({
+                name: p.name,
+                price: p.price,
+                image: p.images[0],
+                source: 'VMA',
+                _id: p._id,
+                shipping: { air: { cost: 0, days: "1-3" }, sea: { cost: 0, days: "N/A" } }
+            })) },
             { name: "Alibaba / 1688", results: alibabaResults.map(p => ({ ...p, shipping: estimateShipping(p) })) },
             { name: "AliExpress Global", results: aliexpressResults.map(p => ({ ...p, shipping: estimateShipping(p) })) },
             { name: "Amazon Global", results: amazonResults.map(p => ({ ...p, shipping: estimateShipping(p) })) }
         ];
+
 
         res.json({
             imageUrl,

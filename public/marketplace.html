@@ -3,58 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Marketplace Mondiale | VMA Elite</title>
+    <title>VMA Elite Marketplace | Sourcing Mondial</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        .home-banner {
+            width: 100%; height: 180px; background: linear-gradient(135deg, #000, #1a1a1a);
+            border-radius: 20px; margin-bottom: 25px; position: relative; overflow: hidden;
+            display: flex; align-items: center; padding: 25px; border: 1px solid #222;
+        }
+        .home-banner::after {
+            content: ""; position: absolute; top: -50%; right: -20%; width: 200px; height: 200px;
+            background: var(--vma-gold); opacity: 0.1; filter: blur(60px); border-radius: 50%;
+        }
+        .category-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; margin-bottom: 25px; }
+        .category-item {
+            flex-shrink: 0; width: 75px; text-align: center; font-size: 10px; color: #888;
+            transition: transform 0.2s;
+        }
+        .category-icon {
+            width: 55px; height: 55px; background: #111; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
+            font-size: 20px; color: var(--vma-gold); border: 1px solid #222;
+        }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .section-title { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; }
+        .view-all { font-size: 11px; color: var(--vma-gold); font-weight: 600; }
+
+        .promo-card {
+            background: #111; border-radius: 15px; padding: 12px; border: 1px solid #222;
+            display: flex; gap: 12px; margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body class="app-shell">
-    <header class="app-header" style="height: 140px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+    <header class="app-header" style="height: 150px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <img src="images/logo.jpeg" style="width: 30px; border-radius: 8px; border: 1px solid var(--vma-gold);">
-                <span class="brand-name" style="font-size: 16px;">VMA MARKETPLACE</span>
+                <img src="images/logo.jpeg" style="width: 32px; height: 32px; border-radius: 8px;">
+                <span class="brand-name" style="font-size: 16px;">VMA ELITE</span>
             </div>
-            <div class="header-actions">
-                <div style="background: rgba(255,215,0,0.1); padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; color: var(--vma-gold);">LIVE SOURCING</div>
+            <div style="display: flex; gap: 15px; font-size: 18px;">
+                <i class="fa-regular fa-bell" onclick="location.href='notifications.html'"></i>
+                <i class="fa-regular fa-heart" onclick="location.href='favorites.html'"></i>
             </div>
         </div>
         <div class="search-container">
             <i class="fa fa-search"></i>
-            <input type="text" placeholder="Chercher dans les usines mondiales..." id="mktSearch">
+            <input type="text" placeholder="iPhone 15, Rolex, Usine 1688..." id="mktSearch">
             <i class="fa fa-camera" onclick="location.href='visual_search.html'" style="margin-left: 10px; color: var(--vma-gold);"></i>
         </div>
     </header>
 
     <main class="scroll-container">
-        <!-- CATEGORIES ELITE -->
-        <div class="categories-tabs">
-            <div class="tab active" data-cat="all">🌍 Tout</div>
-            <div class="tab" data-cat="Electronics">💻 Électronique</div>
-            <div class="tab" data-cat="Fashion">👕 Mode</div>
-            <div class="tab" data-cat="1688">🏮 Usines Chine</div>
-            <div class="tab" data-cat="Amazon">📦 Amazon/USA</div>
-        </div>
-
         <div class="p-16">
-            <div id="mktStatus" style="font-size: 11px; color: #555; margin-bottom: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">SÉLECTION ÉLITE EN TEMPS RÉEL</div>
+            <!-- ELITE BANNER -->
+            <div class="home-banner">
+                <div style="z-index: 1;">
+                    <div style="color: var(--vma-gold); font-weight: 800; font-size: 10px; text-transform: uppercase; margin-bottom: 5px;">Sourcing Direct Usine</div>
+                    <h2 style="font-size: 20px; font-weight: 800; line-height: 1.2; margin-bottom: 15px;">Importez sans <br>intermédiaires.</h2>
+                    <button class="vma-btn-primary" style="padding: 6px 20px; font-size: 11px; width: auto;" onclick="location.href='ai_assistant.html'">DEMANDER À EMMA</button>
+                </div>
+                <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300" style="position: absolute; right: -20px; height: 120%; transform: rotate(-10deg); opacity: 0.6;">
+            </div>
+
+            <!-- CATEGORIES -->
+            <div class="category-scroll">
+                <div class="category-item" onclick="filterBy('Electronics')"><div class="category-icon"><i class="fa fa-laptop"></i></div><span>High-Tech</span></div>
+                <div class="category-item" onclick="filterBy('Fashion')"><div class="category-icon"><i class="fa fa-shirt"></i></div><span>Mode</span></div>
+                <div class="category-item" onclick="filterBy('Home')"><div class="category-icon"><i class="fa fa-couch"></i></div><span>Maison</span></div>
+                <div class="category-item" onclick="filterBy('1688')"><div class="category-icon"><i class="fa fa-industry"></i></div><span>Usines</span></div>
+                <div class="category-item" onclick="filterBy('Luxury')"><div class="category-icon"><i class="fa fa-gem"></i></div><span>Luxe</span></div>
+                <div class="category-item" onclick="filterBy('Auto')"><div class="category-icon"><i class="fa fa-car"></i></div><span>Auto</span></div>
+            </div>
+
+            <!-- RECOMMANDATIONS -->
+            <div class="section-header">
+                <h3 class="section-title">Pour Vous (IA Elite)</h3>
+                <span class="view-all">Voir tout</span>
+            </div>
+
             <div class="main-grid" id="marketplaceFeed">
                 <!-- Data from app.js -->
             </div>
-        </div>
 
-        <div id="mktLoader" style="display: none; text-align: center; padding: 40px;">
-            <i class="fa fa-spinner fa-spin" style="color: var(--vma-gold); font-size: 30px;"></i>
-            <p style="margin-top: 15px; color: #555; font-size: 13px;">Synchronisation avec les hubs logistiques...</p>
+            <!-- GROUP BUYING SECTION -->
+            <div style="margin-top: 35px;">
+                <div class="section-header">
+                    <h3 class="section-title">Achats Groupés 🔥</h3>
+                    <span class="view-all">Rejoindre</span>
+                </div>
+                <div id="groupBuyGrid" class="main-grid">
+                    <!-- Specific groupbuy products -->
+                </div>
+            </div>
         </div>
     </main>
-
-    <style>
-        .categories-tabs { display: flex; gap: 10px; overflow-x: auto; padding: 10px 16px; scrollbar-width: none; }
-        .categories-tabs::-webkit-scrollbar { display: none; }
-        .tab { white-space: nowrap; padding: 8px 18px; background: #0a0a0a; border: 1px solid #222; border-radius: 25px; font-size: 11px; font-weight: 600; color: #666; transition: 0.3s; }
-        .tab.active { background: var(--vma-gold); color: #000; border-color: var(--vma-gold); box-shadow: 0 5px 15px rgba(255,215,0,0.2); }
-    </style>
 
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
@@ -85,67 +130,62 @@
 
         async function initMarketplace() {
             const feed = document.getElementById('marketplaceFeed');
-            const loader = document.getElementById('mktLoader');
-
             try {
-                loader.style.display = 'block';
                 const products = await API.getProducts();
                 VMA_DATA.products = products;
-                loader.style.display = 'none';
-                renderMarketplace();
+                renderEnhancedFeed();
             } catch (err) {
                 console.error(err);
-                loader.style.display = 'none';
             }
         }
 
-        function renderMarketplace() {
+        function renderEnhancedFeed() {
             const feed = document.getElementById('marketplaceFeed');
-            if (!feed) return;
+            const groupGrid = document.getElementById('groupBuyGrid');
 
-            feed.innerHTML = VMA_DATA.products.map(product => {
-                const img = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/300';
-                const source = product.source || 'VMA';
-                return `
-                    <div class="modern-card" onclick="location.href='product.html?id=${product._id}'">
-                        <div class="card-image-wrap">
-                            <img src="${img}" alt="${product.name}">
-                            <div class="source-tag" style="background: ${source === '1688' ? '#ff6600' : 'var(--vma-gold)'}">${source}</div>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="product-name">${product.name}</h3>
-                            <div class="price-row">
-                                <span class="current-price">${new Intl.NumberFormat('fr-FR').format(product.price)} F</span>
+            // Top Products
+            feed.innerHTML = VMA_DATA.products.slice(0, 10).map(p => renderProductCard(p)).join('');
+
+            // Group Buys (Simulated for Demo)
+            groupGrid.innerHTML = VMA_DATA.products.slice(0, 2).map(p => `
+                <div class="promo-card" onclick="location.href='product.html?id=${p._id}'">
+                    <img src="${p.image || (p.images && p.images[0])}" style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 12px; font-weight: 700;">${p.name}</div>
+                        <div style="color: var(--vma-gold); font-size: 14px; font-weight: 800; margin: 4px 0;">${p.price.toLocaleString()} F</div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="flex: 1; height: 4px; background: #222; border-radius: 2px;">
+                                <div style="width: 75%; height: 100%; background: var(--vma-gold); border-radius: 2px;"></div>
                             </div>
+                            <span style="font-size: 9px; color: #666;">75%</span>
                         </div>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `).join('');
         }
 
-        // Logic de recherche temps réel
-        document.getElementById('mktSearch').oninput = async (e) => {
-            const query = e.target.value.trim().toLowerCase();
-            const results = VMA_DATA.products.filter(p => p.name.toLowerCase().includes(query));
-
-            const feed = document.getElementById('marketplaceFeed');
-            feed.innerHTML = results.map(product => {
-                const img = (product.images && product.images[0]) || product.image || 'https://via.placeholder.com/300';
-                return `
-                    <div class="modern-card" onclick="location.href='product.html?id=${product._id}'">
-                        <div class="card-image-wrap">
-                            <img src="${img}" alt="${product.name}">
-                            <div class="source-tag" style="background: var(--vma-gold)">VMA</div>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="product-name">${product.name}</h3>
-                            <div class="price-row">
-                                <span class="current-price">${new Intl.NumberFormat('fr-FR').format(product.price)} F</span>
-                            </div>
+        function renderProductCard(p) {
+            const img = p.image || (p.images && p.images[0]) || 'https://via.placeholder.com/300';
+            return `
+                <div class="modern-card" onclick="location.href='product.html?id=${p._id}'">
+                    <div class="card-image-wrap">
+                        <img src="${img}" alt="${p.name}">
+                        <div class="source-tag">${p.source || 'VMA'}</div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="product-name">${p.name}</h3>
+                        <div class="price-row">
+                            <span class="current-price">${new Intl.NumberFormat('fr-FR').format(p.price)} F</span>
                         </div>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `;
+        }
+
+        document.getElementById('mktSearch').oninput = (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = VMA_DATA.products.filter(p => p.name.toLowerCase().includes(query));
+            document.getElementById('marketplaceFeed').innerHTML = filtered.map(p => renderProductCard(p)).join('');
         };
     </script>
 </body>

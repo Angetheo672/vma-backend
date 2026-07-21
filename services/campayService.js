@@ -26,11 +26,19 @@ class CampayService {
     async collect(amount, phoneNumber, externalReference) {
         if (!this.token) await this.authenticate();
 
+        // Formatage du numéro de téléphone pour le Cameroun (Campay attend 237...)
+        let formattedPhone = phoneNumber.replace(/\s/g, '');
+        if (formattedPhone.startsWith('00')) formattedPhone = formattedPhone.substring(2);
+        if (formattedPhone.startsWith('+')) formattedPhone = formattedPhone.substring(1);
+        if (!formattedPhone.startsWith('237') && formattedPhone.length === 9) {
+            formattedPhone = '237' + formattedPhone;
+        }
+
         try {
             const response = await axios.post(`${this.baseUrl}/collect/`, {
                 amount: amount,
                 currency: 'XAF',
-                from: phoneNumber,
+                from: formattedPhone,
                 description: `Commande VMA ${externalReference}`,
                 external_reference: externalReference
             }, {
@@ -38,6 +46,7 @@ class CampayService {
             });
             return response.data; // { reference, status }
         } catch (error) {
+
             console.error("❌ Campay Collect Error:", error.response ? error.response.data : error.message);
             throw error;
         }

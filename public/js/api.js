@@ -59,7 +59,14 @@ const API = {
     createOrder: (order) => API.request('/orders', { method: 'POST', body: JSON.stringify(order) }),
     getOrders: () => API.request('/orders'),
     updateFCMToken: (token) => API.request('/auth/fcm-token', { method: 'POST', body: JSON.stringify({ token }) }),
-    askBuddy: (query) => API.request('/ai/chat', { method: 'POST', body: JSON.stringify({ query }) }),
-    analyzeLink: (url) => API.request('/tools/analyze-link', { method: 'POST', body: JSON.stringify({ url }) }),
-    initiatePayment: (paymentData) => API.request('/payments/initiate', { method: 'POST', body: JSON.stringify(paymentData) })
+    askBuddy: (query, history = []) => API.request('/ai/chat', { method: 'POST', body: JSON.stringify({ query, history }) }),
+    analyzeLink: (query) => API.request('/tools/analyze-link', { method: 'POST', body: JSON.stringify({ query }) }),
+    initiatePayment: (paymentData) => API.request('/payments/initiate', { method: 'POST', body: JSON.stringify(paymentData) }),
+
+    // SUPPLIER & ADMIN ELITE
+    getSupplierStats: () => API.request('/supplier/stats'),
+    getSupplierOrders: () => API.request('/supplier/orders'),
+    getAdminStats: () => API.request('/admin/stats'),
+    verifySupplier: (id) => API.request(`/admin/verify-supplier/${id}`, { method: 'PUT' }),
+    suspendUser: (id) => API.request(`/admin/suspend-user/${id}`, { method: 'PUT' })
 };

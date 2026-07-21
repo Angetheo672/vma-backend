@@ -87,6 +87,7 @@ app.use('/api/ai', require('./routes/ai'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/tools', require('./routes/tools'));
 app.use('/api/logistics', require('./routes/logistics'));
+app.use('/api/supplier', require('./routes/supplier'));
 
 app.get('/', (req, res) => {
     res.json({ message: "Welcome to Vision Market Africa API v1.0" });
