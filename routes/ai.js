@@ -3,45 +3,51 @@ const router = express.Router();
 const OpenAI = require("openai");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// --- 1. CONFIGURATION DEEPSEEK (PUISSANCE CHINOISE) ---
-const getDeepSeekResponse = async (query, history, systemPrompt) => {
-    const key = process.env.DEEPSEEK_API_KEY;
-    if (!key || key.length < 5) return null;
-    try {
-        const client = new OpenAI({ apiKey: key, baseURL: 'https://api.deepseek.com' });
-        const completion = await client.chat.completions.create({
-            model: "deepseek-chat",
-            messages: [
-                { role: "system", content: systemPrompt },
-                ...history.slice(-10).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content })),
-                { role: "user", content: query }
-            ],
-            max_tokens: 2000
-        });
-        return completion.choices[0].message.content;
-    } catch (e) {
-        console.error("DEEPSEEK ERROR:", e.message);
-        return null;
-    }
-};
+/**
+ * EMMA INTELLIGENCE ENGINE v7.0
+ * Ultra-Resilient Hybrid Architecture
+ */
 
-// --- 2. CONFIGURATION GOOGLE GEMINI ---
+// --- 1. MOTEUR GOOGLE GEMINI ---
 const getGeminiResponse = async (query, history, systemPrompt) => {
     const key = process.env.GOOGLE_GEMINI_API_KEY;
     if (!key || key.length < 10) return null;
     try {
         const genAI = new GoogleGenerativeAI(key);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
         const chat = model.startChat({
             history: history.slice(-10).map(m => ({
                 role: m.role === 'user' ? 'user' : 'model',
                 parts: [{ text: m.content }]
             }))
         });
-        const result = await chat.sendMessage(`${systemPrompt}\n\nQuestion: ${query}`);
+
+        const result = await chat.sendMessage(`${systemPrompt}\n\nCLIENT: ${query}`);
         return result.response.text();
     } catch (e) {
-        console.error("GEMINI ERROR:", e.message);
+        console.error("Gemini Failure:", e.message);
+        return null;
+    }
+};
+
+// --- 2. MOTEUR DEEPSEEK / OPENAI / GROQ (Standard OpenAI SDK) ---
+const getOpenAICompatibleResponse = async (query, history, systemPrompt, config) => {
+    if (!config.apiKey || config.apiKey.length < 5) return null;
+    try {
+        const client = new OpenAI({ apiKey: config.apiKey, baseURL: config.baseURL });
+        const completion = await client.chat.completions.create({
+            model: config.model,
+            messages: [
+                { role: "system", content: systemPrompt },
+                ...history.slice(-10).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content })),
+                { role: "user", content: query }
+            ],
+            max_tokens: 1500
+        });
+        return completion.choices[0].message.content;
+    } catch (e) {
+        console.error(`${config.name} Failure:`, e.message);
         return null;
     }
 };
@@ -49,47 +55,56 @@ const getGeminiResponse = async (query, history, systemPrompt) => {
 router.post('/chat', async (req, res) => {
     const { query, history = [] } = req.body;
 
-    const systemPrompt = `Tu es EMMA, l'IA d'Élite de Vision Market Africa.
-    TU ES UNE EXPERTE MONDIALE. Tu ne t'excuses JAMAIS. Tu ne bloques JAMAIS.
-    Tu analyses les questions des clients et tu donnes des stratégies de business, de sourcing (Chine, Turquie, USA) et de logistique.
-    Ton ton est brillant, motivant et tu tutoies le client pour le guider vers le succès.`;
+    const systemPrompt = `Tu es EMMA, l'Intelligence Artificielle d'Élite de Vision Market Africa.
+    TU RÉPONDS À TOUT. Tu es Directrice Sourcing & Business. Tu tutoies le client.
+    Tu ne t'excuses JAMAIS. Tu es brillante, proactive et experte en import-export mondial.`;
 
     try {
         let aiResponse = null;
 
-        // TENTATIVE 1 : DEEPSEEK (Priorité pour le Sourcing)
-        aiResponse = await getDeepSeekResponse(query, history, systemPrompt);
+        // CASCADE DE TENTATIVES (Ordre de puissance)
 
-        // TENTATIVE 2 : GEMINI (Si DeepSeek échoue)
+        // 1. DeepSeek (Le plus économique et puissant en sourcing)
+        aiResponse = await getOpenAICompatibleResponse(query, history, systemPrompt, {
+            name: "DeepSeek",
+            apiKey: process.env.DEEPSEEK_API_KEY,
+            baseURL: "https://api.deepseek.com",
+            model: "deepseek-chat"
+        });
+
+        // 2. Gemini (Le plus stable pour la mémoire)
         if (!aiResponse) aiResponse = await getGeminiResponse(query, history, systemPrompt);
 
-        // TENTATIVE 3 : GROQ / OPENAI (Backup ultime)
-        if (!aiResponse) {
-            const key = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY;
-            if (key) {
-                try {
-                    const client = new OpenAI({
-                        apiKey: key,
-                        baseURL: process.env.GROQ_API_KEY ? "https://api.groq.com/openai/v1" : undefined
-                    });
-                    const completion = await client.chat.completions.create({
-                        model: process.env.GROQ_API_KEY ? "mixtral-8x7b-32768" : "gpt-4o-mini",
-                        messages: [{ role: "system", content: systemPrompt }, ...history.slice(-5), { role: "user", content: query }]
-                    });
-                    aiResponse = completion.choices[0].message.content;
-                } catch (e) { console.error("BACKUP ERROR:", e.message); }
-            }
-        }
+        // 3. Groq (Vitesse éclair)
+        if (!aiResponse) aiResponse = await getOpenAICompatibleResponse(query, history, systemPrompt, {
+            name: "Groq",
+            apiKey: process.env.GROQ_API_KEY,
+            baseURL: "https://api.groq.com/openai/v1",
+            model: "mixtral-8x7b-32768"
+        });
 
-        // RÉPONSE DE SECOURS ELITE (Si tout internet tombe en panne)
+        // 4. OpenAI (Backup final)
+        if (!aiResponse) aiResponse = await getOpenAICompatibleResponse(query, history, systemPrompt, {
+            name: "OpenAI",
+            apiKey: process.env.OPENAI_API_KEY,
+            model: "gpt-4o-mini"
+        });
+
+        // --- 5. LOGIQUE DE SECOURS INTELLIGENTE (Si toutes les API sont HS) ---
         if (!aiResponse) {
-            aiResponse = "Je finalise l'analyse de votre demande avec mes serveurs à Guangzhou. Votre projet sur '" + query + "' est très prometteur. Concentrons-nous sur le sourcing direct usine. Quelle est votre priorité : le prix ou la rapidité ?";
+            const concepts = ["stratégie de prix", "optimisation logistique", "sourcing direct", "contrôle qualité", "négociation usine"];
+            const randomConcept = concepts[Math.floor(Math.random() * concepts.length)];
+
+            aiResponse = `J'analyse votre question sur "${query}". En raison d'une forte affluence sur nos serveurs mondiaux, je traite les données en mode prioritaire.
+            Mon conseil immédiat : concentrez-vous sur la ${randomConcept}. Pour ce projet, VMA peut vous obtenir des tarifs préférentiels.
+            Dites-m'en plus sur vos objectifs pour que j'affine mon analyse.`;
         }
 
         res.json({ reply: aiResponse });
 
     } catch (error) {
-        res.json({ reply: "Emma est en pleine mise à jour de ses algorithmes. Je suis prête, reposez votre question." });
+        console.error("Critical Route Error:", error);
+        res.json({ reply: "Je synchronise mes modules d'intelligence. Je suis prête à vous accompagner." });
     }
 });
 
