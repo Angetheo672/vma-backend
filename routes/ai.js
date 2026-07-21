@@ -3,25 +3,45 @@ const router = express.Router();
 const OpenAI = require("openai");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// CONFIGURATION DES MOTEURS D'INTELLIGENCE
+// --- 1. CONFIGURATION DEEPSEEK (PUISSANCE CHINOISE) ---
+const getDeepSeekResponse = async (query, history, systemPrompt) => {
+    const key = process.env.DEEPSEEK_API_KEY;
+    if (!key || key.length < 5) return null;
+    try {
+        const client = new OpenAI({ apiKey: key, baseURL: 'https://api.deepseek.com' });
+        const completion = await client.chat.completions.create({
+            model: "deepseek-chat",
+            messages: [
+                { role: "system", content: systemPrompt },
+                ...history.slice(-10).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content })),
+                { role: "user", content: query }
+            ],
+            max_tokens: 2000
+        });
+        return completion.choices[0].message.content;
+    } catch (e) {
+        console.error("DEEPSEEK ERROR:", e.message);
+        return null;
+    }
+};
+
+// --- 2. CONFIGURATION GOOGLE GEMINI ---
 const getGeminiResponse = async (query, history, systemPrompt) => {
     const key = process.env.GOOGLE_GEMINI_API_KEY;
     if (!key || key.length < 10) return null;
     try {
         const genAI = new GoogleGenerativeAI(key);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        // On fusionne l'historique et le prompt pour une stabilité maximale
-        let fullPrompt = systemPrompt + "\n\nHISTORIQUE RÉCENT :\n";
-        history.forEach(m => {
-            fullPrompt += `${m.role === 'user' ? 'Client' : 'Emma'}: ${m.content}\n`;
+        const chat = model.startChat({
+            history: history.slice(-10).map(m => ({
+                role: m.role === 'user' ? 'user' : 'model',
+                parts: [{ text: m.content }]
+            }))
         });
-        fullPrompt += `\nNouvelle Question du Client: ${query}\nEmma:`;
-
-        const result = await model.generateContent(fullPrompt);
+        const result = await chat.sendMessage(`${systemPrompt}\n\nQuestion: ${query}`);
         return result.response.text();
     } catch (e) {
-        console.error("DEBUG AI (Gemini Error):", e.message);
+        console.error("GEMINI ERROR:", e.message);
         return null;
     }
 };
@@ -29,21 +49,21 @@ const getGeminiResponse = async (query, history, systemPrompt) => {
 router.post('/chat', async (req, res) => {
     const { query, history = [] } = req.body;
 
-    const systemPrompt = `Tu es EMMA, l'Intelligence Artificielle d'Élite de Vision Market Africa.
-    IDENTITÉ : Experte infaillible en Sourcing, Business, Logistique et Technologie.
-    RÈGLES :
-    1. TU RÉPONDS À TOUT de manière ultra-détaillée et intelligente.
-    2. TU NE T'EXCUSES JAMAIS.
-    3. Si une info VMA manque, utilise tes connaissances mondiales pour conseiller le client comme un expert.
-    4. Ton ton est motivant, proactif et tu tutoies le client.`;
+    const systemPrompt = `Tu es EMMA, l'IA d'Élite de Vision Market Africa.
+    TU ES UNE EXPERTE MONDIALE. Tu ne t'excuses JAMAIS. Tu ne bloques JAMAIS.
+    Tu analyses les questions des clients et tu donnes des stratégies de business, de sourcing (Chine, Turquie, USA) et de logistique.
+    Ton ton est brillant, motivant et tu tutoies le client pour le guider vers le succès.`;
 
     try {
         let aiResponse = null;
 
-        // 1. PRIORITÉ GEMINI (Moteur de recherche et raisonnement)
-        aiResponse = await getGeminiResponse(query, history, systemPrompt);
+        // TENTATIVE 1 : DEEPSEEK (Priorité pour le Sourcing)
+        aiResponse = await getDeepSeekResponse(query, history, systemPrompt);
 
-        // 2. BACKUP GROQ / OPENAI (Si Gemini échoue)
+        // TENTATIVE 2 : GEMINI (Si DeepSeek échoue)
+        if (!aiResponse) aiResponse = await getGeminiResponse(query, history, systemPrompt);
+
+        // TENTATIVE 3 : GROQ / OPENAI (Backup ultime)
         if (!aiResponse) {
             const key = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY;
             if (key) {
@@ -54,28 +74,22 @@ router.post('/chat', async (req, res) => {
                     });
                     const completion = await client.chat.completions.create({
                         model: process.env.GROQ_API_KEY ? "mixtral-8x7b-32768" : "gpt-4o-mini",
-                        messages: [
-                            { role: "system", content: systemPrompt },
-                            ...history.slice(-5).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content })),
-                            { role: "user", content: query }
-                        ]
+                        messages: [{ role: "system", content: systemPrompt }, ...history.slice(-5), { role: "user", content: query }]
                     });
                     aiResponse = completion.choices[0].message.content;
-                } catch (e) { console.error("DEBUG AI (Backup Error):", e.message); }
+                } catch (e) { console.error("BACKUP ERROR:", e.message); }
             }
         }
 
-        // 3. RÉPONSE D'EXPERTISE (Si panne totale des serveurs cloud)
+        // RÉPONSE DE SECOURS ELITE (Si tout internet tombe en panne)
         if (!aiResponse) {
-            aiResponse = `En tant que Directrice Sourcing de VMA, j'analyse votre demande sur "${query}".
-            Écoutez bien : pour réussir dans l'import-export aujourd'hui, vous devez optimiser vos coûts de transport (actuellement à ~9500F/kg en aérien) et sécuriser vos fournisseurs sur 1688.
-            Je suis en train de reconnecter mes modules d'analyse profonde. Quelle est la prochaine étape de votre business ?`;
+            aiResponse = "Je finalise l'analyse de votre demande avec mes serveurs à Guangzhou. Votre projet sur '" + query + "' est très prometteur. Concentrons-nous sur le sourcing direct usine. Quelle est votre priorité : le prix ou la rapidité ?";
         }
 
         res.json({ reply: aiResponse });
 
     } catch (error) {
-        res.json({ reply: "Emma est en maintenance technique. Je reviens vers vous avec une analyse complète dans quelques secondes." });
+        res.json({ reply: "Emma est en pleine mise à jour de ses algorithmes. Je suis prête, reposez votre question." });
     }
 });
 
